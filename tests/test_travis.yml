@@ -1,0 +1,13 @@
+---
+
+# Role travis tests
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - "{{ role_name }}"
+  post_tasks:
+    - include: ./test_common.yml
+  vars:
+    role_name: "{{ lookup('env','TRAVIS_REPO_SLUG') }}"
+
