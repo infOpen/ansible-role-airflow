@@ -2,3 +2,17 @@
 
 # Main tasks file for airflow role
 
+# Include default system dependencies
+- name: 'Include default system dependencies'
+  include_vars: "{{ role_path }}/vars/{{ ansible_distribution | lower }}.yml"
+  tags:
+    - 'install'
+    - 'airflow'
+
+
+# Installation tasks management
+- name: 'Include installation tasks'
+  include: "{{ role_path }}/tasks/manage_installation.yml"
+  tags:
+    - 'install'
+    - 'airflow'

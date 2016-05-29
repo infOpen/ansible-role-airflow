@@ -2,3 +2,16 @@
 
 # Defaults vars file for airflow role
 
+# Installation vars
+airflow_user_name: 'airflow'
+airflow_user_shell: '/bin/false'
+airflow_user_home_path: '/var/lib/airflow'
+airflow_user_home_mode: '0700'
+
+airflow_virtualenv: "{{ airflow_user_home_path }}/venv"
+airflow_python_version: 'python3.4'
+airflow_packages:
+  - name: 'Cython'
+  - name: 'airflow'
+airflow_extra_packages: []
+airflow_system_dependencies: []

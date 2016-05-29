@@ -1,0 +1,43 @@
+---
+
+# Airflow installation tasks
+
+# Manage system dependencies
+- name: 'Manage system dependencies'
+  become: True
+  package:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ airflow_default_system_dependencies
+                  + airflow_system_dependencies }}"
+
+
+# Create user
+- name: 'Manage airflow user creation'
+  become: True
+  user:
+    name: "{{ airflow_user_name }}"
+    createhome: True
+    home: "{{ airflow_user_home_path}}"
+    state: 'present'
+    shell: "{{ airflow_user_shell }}"
+
+
+- name: 'Manage permissions on user home directory'
+  become: True
+  file:
+    path: "{{ airflow_user_home_path }}"
+    owner: "{{ airflow_user_name }}"
+    group: "{{ airflow_user_name }}"
+    mode: "{{ airflow_user_home_mode }}"
+
+
+- name: 'Manage airflow installation'
+  become: True
+  become_user: "{{ airflow_user_name }}"
+  pip:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    virtualenv: "{{ airflow_virtualenv }}"
+    virtualenv_python: "{{ airflow_python_version }}"
+  with_items: "{{ airflow_packages + airflow_extra_packages }}"
