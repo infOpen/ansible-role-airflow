@@ -34,7 +34,7 @@ install:
 script:
 
   # Run tests
-  - 'travis_wait make test-env'
+  - 'travis_wait 30 make test-env'
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
