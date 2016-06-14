@@ -1,0 +1,10 @@
+---
+
+# Role Vagrant tests
+
+- hosts: all
+  remote_user: vagrant
+  roles:
+    - "{{ role_name }}"
+  vars:
+    role_name: "{{ lookup('env','ANSIBLE_ROLE_NAME') }}"
