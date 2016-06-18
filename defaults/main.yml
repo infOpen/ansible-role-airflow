@@ -12,6 +12,15 @@ airflow_virtualenv: "{{ airflow_user_home_path }}/venv"
 airflow_python_version: 'python3.4'
 airflow_packages:
   - name: 'Cython'
+    version: '0.24'
   - name: 'airflow'
-airflow_extra_packages: []
+    version: '1.7.1.3'
+  - name: 'setuptools'
+    version: '23.0.0'
+airflow_extra_packages:
+  - name: 'airflow[crypto]'
 airflow_system_dependencies: []
+
+# Databases variables
+airflow_manage_database: True
+airflow_database_engine: 'mysql'

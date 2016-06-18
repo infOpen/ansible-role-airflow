@@ -32,7 +32,21 @@
     mode: "{{ airflow_user_home_mode }}"
 
 
+# Install airflow packages
 - name: 'Manage airflow installation'
+  become: True
+  become_user: "{{ airflow_user_name }}"
+  pip:
+    name: "{{ item.name }}"
+    version: "{{ item.version }}"
+    state: "{{ item.state | default('present') }}"
+    virtualenv: "{{ airflow_virtualenv }}"
+    virtualenv_python: "{{ airflow_python_version }}"
+  with_items: "{{ airflow_packages }}"
+
+
+# Install airflow extra packages
+- name: 'Manage airflow extra packages installation'
   become: True
   become_user: "{{ airflow_user_name }}"
   pip:
@@ -40,4 +54,4 @@
     state: "{{ item.state | default('present') }}"
     virtualenv: "{{ airflow_virtualenv }}"
     virtualenv_python: "{{ airflow_python_version }}"
-  with_items: "{{ airflow_packages + airflow_extra_packages }}"
+  with_items: "{{ airflow_extra_packages }}"
