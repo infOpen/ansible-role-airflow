@@ -112,3 +112,17 @@ airflow_defaults_config:
 
 airflow_user_config: {}
 airflow_config: "{{ airflow_defaults_config | combine(airflow_user_config) }}"
+
+# Logrotate configuration
+airflow_logrotate_config:
+  - filename: '/etc/logrotate.d/airflow'
+    log_pattern:
+      - "{{ airflow_log_path }}/*.log"
+    options:
+      - 'rotate 12'
+      - 'weekly'
+      - 'compress'
+      - 'delaycompress'
+      - "create 640 {{ airflow_log_owner }} {{ airflow_log_group }}"
+      - 'postrotate'
+      - 'endscript'
