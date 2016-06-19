@@ -2,6 +2,15 @@
 
 # Airflow configuration tasks
 
+# Check if configuration file exists
+- name: 'Check if configuration file exists'
+  become: True
+  stat:
+    path: "{{ airflow_config.core.home }}/airflow.cfg"
+  register: 'airflow_config_stat'
+  changed_when: False
+
+
 # Manage configuration templating
 - name: 'Manage configuration templating'
   become: True
@@ -47,3 +56,23 @@
     group: 'root'
     mode: '0644'
   with_items: "{{ airflow_logrotate_config }}"
+
+
+# Manage database initialize if first deployment
+- name: 'Manage database initialize'
+  become: True
+  become_user: "{{ airflow_user_name }}"
+  command: "{{ airflow_virtualenv }}/bin/airflow initdb"
+  when:
+    - "{{ not airflow_config_stat.stat.exists }}"
+    - "{{ airflow_do_init_db }}"
+
+
+# Manage database upgrade if not first deployment
+- name: 'Manage database upgrade'
+  become: True
+  become_user: "{{ airflow_user_name }}"
+  command: "{{ airflow_virtualenv }}/bin/airflow upgradedb"
+  when:
+    - "{{ airflow_config_stat.stat.exists }}"
+    - "{{ airflow_do_upgrade_db }}"

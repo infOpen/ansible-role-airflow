@@ -66,6 +66,10 @@ airflow_scheduler_respawn_limit_timeperiod: 30
 airflow_manage_database: True
 airflow_database_engine: 'mysql'
 
+# Set do_init to false if database already initialized
+airflow_do_init_db: True
+airflow_do_upgrade_db: True
+
 # Default configuration
 airflow_defaults_config:
   core:
