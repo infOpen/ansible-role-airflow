@@ -12,6 +12,7 @@
     owner: "{{ airflow_user_name }}"
     group: "{{ airflow_user_group }}"
     mode: '0400'
+  notify: 'Restart airflow'
 
 
 # Manage logs folder
@@ -22,6 +23,17 @@
     owner: "{{ airflow_log_owner }}"
     group: "{{ airflow_log_group }}"
     mode: "{{ airflow_log_mode }}"
+    state: 'directory'
+
+
+# Manage pid folder
+- name: 'Manage pid folder'
+  become: True
+  file:
+    path: "{{ airflow_pid_path }}"
+    owner: "{{ airflow_pid_owner }}"
+    group: "{{ airflow_pid_group }}"
+    mode: "{{ airflow_pid_mode }}"
     state: 'directory'
 
 

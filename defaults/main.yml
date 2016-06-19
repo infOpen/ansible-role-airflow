@@ -14,6 +14,11 @@ airflow_log_owner: "{{ airflow_user_name }}"
 airflow_log_group: "{{ airflow_user_group }}"
 airflow_log_mode: '0700'
 
+airflow_pid_path: '/var/run/airflow'
+airflow_pid_owner: "{{ airflow_user_name }}"
+airflow_pid_group: "{{ airflow_user_group }}"
+airflow_pid_mode: '0700'
+
 airflow_virtualenv: "{{ airflow_user_home_path }}/venv"
 airflow_python_version: 'python3.4'
 airflow_packages:
@@ -27,10 +32,41 @@ airflow_extra_packages:
   - name: 'airflow[crypto]'
 airflow_system_dependencies: []
 
+# Services management
+airflow_managed_upstart_services:
+  - 'airflow-scheduler'
+  - 'airflow-webserver'
+
+airflow_services_states:
+  - name: 'airflow-webserver'
+    state: 'started'
+  - name: 'airflow-scheduler'
+    state: 'started'
+
+# Webserver service configuration
+airflow_webserver_port: 8080
+airflow_webserver_workers: 1
+airflow_webserver_worker_class: 'sync'
+airflow_webserver_worker_timeout: 30
+airflow_webserver_hostname: "{{ ansible_default_ipv4.address }}"
+airflow_webserver_pid_file: "{{ airflow_pid_path }}/airflow-webserver.pid"
+airflow_webserver_log_file: "{{ airflow_log_path }}/airflow-webserver.log"
+airflow_webserver_debug: False
+airflow_webserver_respawn_limit_count: 5
+airflow_webserver_respawn_limit_timeperiod: 30
+
+# Scheduler service configuration
+airflow_scheduler_runs: 0
+airflow_scheduler_pid_file: "{{ airflow_pid_path }}/airflow-scheduler.pid"
+airflow_scheduler_log_file: "{{ airflow_log_path }}/airflow-scheduler.log"
+airflow_scheduler_respawn_limit_count: 5
+airflow_scheduler_respawn_limit_timeperiod: 30
+
 # Databases variables
 airflow_manage_database: True
 airflow_database_engine: 'mysql'
 
+# Default configuration
 airflow_defaults_config:
   core:
     home: "{{ airflow_user_home_path ~ '/airflow' }}"

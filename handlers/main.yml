@@ -2,3 +2,28 @@
 
 # Handlers main file for airflow role
 
+- name: 'Restart airflow'
+  become: True
+  service:
+    name: "{{ item.name }}"
+    state: 'restarted'
+  with_items: "{{ airflow_services_states }}"
+  when: "{{ item.state == 'started' }}"
+
+
+- name: 'Restart airflow-webserver'
+  become: True
+  service:
+    name: "{{ item.name }}"
+    state: 'restarted'
+  with_items: "{{ airflow_services_states }}"
+  when: "{{ (item.name == 'airflow-webserver') and (item.state == 'started') }}"
+
+
+- name: 'Restart airflow-scheduler'
+  become: True
+  service:
+    name: "{{ item.name }}"
+    state: 'restarted'
+  with_items: "{{ airflow_services_states }}"
+  when: "{{ (item.name == 'airflow-scheduler') and (item.state == 'started') }}"

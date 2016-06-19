@@ -1,0 +1,36 @@
+# {{ ansible_managed }}
+
+description "Airflow scheduler daemon"
+
+start on started networking
+stop on (deconfiguring-networking or runlevel [016])
+
+respawn
+respawn limit {{ airflow_scheduler_respawn_limit_count }} {{ airflow_scheduler_respawn_limit_timeperiod }}
+
+chdir {{ airflow_config.core.home }}
+setuid {{ airflow_user_name }}
+setgid {{ airflow_user_group }}
+
+# Define environment variables
+env AIRFLOW_HOME="{{ airflow_config.core.home }}"
+env AIRFLOW_CONFIG="${AIRFLOW_HOME}/airflow.cfg"
+env AIRFLOW_BINARY_PATH="{{ airflow_virtualenv ~ '/bin' }}"
+env AIRFLOW_SCHEDULER_RUNS="{{ airflow_scheduler_runs }}"
+env AIRFLOW_SCHEDULER_PID_FILE="{{ airflow_scheduler_pid_file }}"
+env AIRFLOW_SCHEDULER_LOG_FILE="{{ airflow_scheduler_log_file }}"
+
+export AIRFLOW_CONFIG
+export AIRFLOW_HOME
+export AIRFLOW_BINARY_PATH
+export AIRFLOW_SCHEDULER_RUNS
+export AIRFLOW_SCHEDULER_PID_FILE
+export AIRFLOW_SCHEDULER_LOG_FILE
+
+script
+    export PATH="${AIRFLOW_BINARY_PATH}:${PATH}"
+    exec "${AIRFLOW_BINARY_PATH}/"airflow scheduler \
+            --num_runs "${AIRFLOW_SCHEDULER_RUNS}" \
+            --pid "${AIRFLOW_SCHEDULER_PID_FILE}" \
+            --log-file "${AIRFLOW_SCHEDULER_LOG_FILE}"
+end script

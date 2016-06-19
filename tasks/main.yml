@@ -18,9 +18,17 @@
     - 'airflow'
 
 
-# Installation tasks management
+# Configuration tasks management
 - name: 'Include configuration tasks'
   include: "{{ role_path }}/tasks/manage_configuration.yml"
+  tags:
+    - 'config'
+    - 'airflow'
+
+
+# Services tasks management
+- name: 'Include services configuration tasks'
+  include: "{{ role_path }}/tasks/manage_services.yml"
   tags:
     - 'config'
     - 'airflow'
