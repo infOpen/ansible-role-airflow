@@ -1,0 +1,14 @@
+---
+
+# Airflow configuration tasks
+
+# Manage configuration templating
+- name: 'Manage configuration templating'
+  become: True
+  become_user: "{{ airflow_user_name }}"
+  template:
+    src: "{{ role_path }}/templates/airflow.cfg.j2"
+    dest: "{{ airflow_config.core.home }}/airflow.cfg"
+    owner: "{{ airflow_user_name }}"
+    group: "{{ airflow_user_group }}"
+    mode: '0400'

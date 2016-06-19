@@ -16,3 +16,11 @@
   tags:
     - 'install'
     - 'airflow'
+
+
+# Installation tasks management
+- name: 'Include configuration tasks'
+  include: "{{ role_path }}/tasks/manage_configuration.yml"
+  tags:
+    - 'config'
+    - 'airflow'
