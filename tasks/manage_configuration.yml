@@ -11,6 +11,17 @@
   changed_when: False
 
 
+# Create airflow directory
+- name: 'Create root airflow directory'
+  become: True
+  file:
+    path: "{{ airflow_config.core.home }}"
+    owner: "{{ airflow_user_name }}"
+    group: "{{ airflow_user_group }}"
+    mode: '0700'
+    state: 'directory'
+
+
 # Manage configuration templating
 - name: 'Manage configuration templating'
   become: True
