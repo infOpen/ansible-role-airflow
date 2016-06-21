@@ -1,0 +1,53 @@
+# {{ ansible_managed }}
+
+description "Airflow webserver daemon"
+
+start on started networking
+stop on (deconfiguring-networking or runlevel [016])
+
+respawn
+respawn limit {{ airflow_webserver_respawn_limit_count }} {{ airflow_webserver_respawn_limit_timeperiod }}
+
+chdir {{ airflow_config.core.home }}
+setuid {{ airflow_user_name }}
+setgid {{ airflow_user_group }}
+
+# Define environment variables
+env AIRFLOW_HOME="{{ airflow_config.core.home }}"
+env AIRFLOW_CONFIG="${AIRFLOW_HOME}/airflow.cfg"
+env AIRFLOW_BINARY_PATH="{{ airflow_virtualenv ~ '/bin' }}"
+env AIRFLOW_WEBSERVER_PORT="{{ airflow_webserver_port }}"
+env AIRFLOW_WEBSERVER_WORKERS="{{ airflow_webserver_workers }}"
+env AIRFLOW_WEBSERVER_WORKER_CLASS="{{ airflow_webserver_worker_class }}"
+env AIRFLOW_WEBSERVER_WORKER_TIMEOUT="{{ airflow_webserver_worker_timeout }}"
+env AIRFLOW_WEBSERVER_HOSTNAME="{{ airflow_webserver_hostname }}"
+env AIRFLOW_WEBSERVER_PID_FILE="{{ airflow_webserver_pid_file }}"
+env AIRFLOW_WEBSERVER_LOG_FILE="{{ airflow_webserver_log_file }}"
+{% if airflow_webserver_debug %}
+env AIRFLOW_WEBSERVER_DEBUG="--debug"
+{% endif %}
+
+export AIRFLOW_CONFIG
+export AIRFLOW_HOME
+export AIRFLOW_BINARY_PATH
+export AIRFLOW_WEBSERVER_PORT
+export AIRFLOW_WEBSERVER_WORKERS
+export AIRFLOW_WEBSERVER_WORKER_CLASS
+export AIRFLOW_WEBSERVER_WORKER_TIMEOUT
+export AIRFLOW_WEBSERVER_HOSTNAME
+export AIRFLOW_WEBSERVER_PID_FILE
+export AIRFLOW_WEBSERVER_LOG_FILE
+export AIRFLOW_WEBSERVER_DEBUG
+
+script
+    export PATH="${AIRFLOW_BINARY_PATH}:${PATH}"
+    exec "${AIRFLOW_BINARY_PATH}/"airflow \
+            webserver \
+            --port "${AIRFLOW_WEBSERVER_PORT}" \
+            --workers "${AIRFLOW_WEBSERVER_WORKERS}" \
+            --workerclass "${AIRFLOW_WEBSERVER_WORKER_CLASS}" \
+            --worker_timeout "${AIRFLOW_WEBSERVER_WORKER_TIMEOUT}" \
+            --hostname "${AIRFLOW_WEBSERVER_HOSTNAME}" \
+            --pid "${AIRFLOW_WEBSERVER_PID_FILE}" \
+            --log-file "${AIRFLOW_WEBSERVER_LOG_FILE}" $AIRFLOW_WEBSERVER_DEBUG
+end script

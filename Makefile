@@ -11,11 +11,23 @@ SSH_PRIVATE_KEY ?= $(HOME)/.ssh/id_rsa
 SSH_PUBLIC_KEY ?= $(HOME)/.ssh/id_rsa.pub
 
 
+# Clean all
+clean: clean-test clean-pyc
+
+
 # Clean test environments
 clean-test:
 	rm -fr .tox/
 	rm -f .coverage
 	rm -fr reports/
+
+
+# Clean python files
+clean-pyc:
+	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '*.pyo' -exec rm -f {} +
+	find . -name '*~' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -fr {} +
 
 
 # Target used to execute tests on all tox environments
