@@ -14,6 +14,18 @@
   when: "{{ 'airflow-scheduler' in airflow_managed_upstart_services }}"
 
 
+- name: 'Manage webserver service with init.d'
+  become: True
+  template:
+    src: "{{ role_path }}/templates/init.d/airflow-webserver.j2"
+    dest: '/etc/init.d/airflow-webserver'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  notify: 'Restart airflow-webserver'
+  when: "{{ 'airflow-scheduler' in airflow_managed_initd_services }}"
+
+
 - name: 'Manage scheduler service with upstart'
   become: True
   template:
@@ -24,6 +36,18 @@
     mode: '0644'
   notify: 'Restart airflow-scheduler'
   when: "{{ 'airflow-scheduler' in airflow_managed_upstart_services }}"
+
+
+- name: 'Manage scheduler service with init.d'
+  become: True
+  template:
+    src: "{{ role_path }}/templates/init.d/airflow-scheduler.j2"
+    dest: '/etc/init.d/airflow-scheduler'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  notify: 'Restart airflow-scheduler'
+  when: "{{ 'airflow-scheduler' in airflow_managed_initd_services }}"
 
 
 # Services states

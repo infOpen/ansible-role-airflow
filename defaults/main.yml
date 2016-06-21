@@ -33,7 +33,8 @@ airflow_extra_packages:
 airflow_system_dependencies: []
 
 # Services management
-airflow_managed_upstart_services:
+airflow_managed_upstart_services: []
+airflow_managed_initd_services:
   - 'airflow-scheduler'
   - 'airflow-webserver'
 
@@ -42,6 +43,7 @@ airflow_services_states:
     state: 'started'
   - name: 'airflow-scheduler'
     state: 'started'
+
 
 # Webserver service configuration
 airflow_webserver_port: 8080
