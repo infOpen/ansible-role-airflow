@@ -27,6 +27,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # Set proper box
       vm_config.vm.box = options[:box]
 
+      # Need memory
+      vm_config.vm.provider "virtualbox" do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "2048"]
+      end
+
       # Update system and install requirements
       vm_config.vm.provision "shell" do |sh|
         if ANSIBLE_DOWNLOAD_SOURCE == 'git'
@@ -57,14 +62,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
       end
 
-      # Run pytest tests for filter plugins
-      vm_config.vm.provision "shell" do |sh|
-        sh.inline = "cd /vagrant \
-                      && rm -f tests/__pycache__/*.pyc \
-                      && py.test -v"
-        sh.privileged = false
-      end
-
       # Use trigger plugin to set environment variable used by Ansible
       # Needed with 2.0 home path change
       vm_config.vm.provision "trigger" do |trigger|
@@ -83,11 +80,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # Run Ansible provisioning
       vm_config.vm.provision "ansible" do |ansible|
         ansible.playbook  = "tests/test_vagrant.yml"
-      end
-
-      # Run Serverspec tests
-      vm_config.vm.provision "serverspec" do |serverspec|
-        serverspec.pattern = 'spec/*_spec.rb'
       end
 
     end

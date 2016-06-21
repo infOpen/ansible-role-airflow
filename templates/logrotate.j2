@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+
+{{ item.log_pattern | join(' ') }} {
+{% for option in item.options %}
+    {{ option }}
+{% endfor %}
+}

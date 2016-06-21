@@ -1,0 +1,89 @@
+---
+
+# Airflow configuration tasks
+
+# Check if configuration file exists
+- name: 'Check if configuration file exists'
+  become: True
+  stat:
+    path: "{{ airflow_config.core.home }}/airflow.cfg"
+  register: 'airflow_config_stat'
+  changed_when: False
+
+
+# Create airflow directory
+- name: 'Create root airflow directory'
+  become: True
+  file:
+    path: "{{ airflow_config.core.home }}"
+    owner: "{{ airflow_user_name }}"
+    group: "{{ airflow_user_group }}"
+    mode: '0700'
+    state: 'directory'
+
+
+# Manage configuration templating
+- name: 'Manage configuration templating'
+  become: True
+  become_user: "{{ airflow_user_name }}"
+  template:
+    src: "{{ role_path }}/templates/airflow.cfg.j2"
+    dest: "{{ airflow_config.core.home }}/airflow.cfg"
+    owner: "{{ airflow_user_name }}"
+    group: "{{ airflow_user_group }}"
+    mode: '0400'
+  notify: 'Restart airflow'
+
+
+# Manage logs folder
+- name: 'Manage log folder'
+  become: True
+  file:
+    path: "{{ airflow_log_path }}"
+    owner: "{{ airflow_log_owner }}"
+    group: "{{ airflow_log_group }}"
+    mode: "{{ airflow_log_mode }}"
+    state: 'directory'
+
+
+# Manage pid folder
+- name: 'Manage pid folder'
+  become: True
+  file:
+    path: "{{ airflow_pid_path }}"
+    owner: "{{ airflow_pid_owner }}"
+    group: "{{ airflow_pid_group }}"
+    mode: "{{ airflow_pid_mode }}"
+    state: 'directory'
+
+
+# Manage logrotate configuration
+- name: 'Manage logrotate configuration'
+  become: True
+  template:
+    src: "{{ role_path }}/templates/logrotate.j2"
+    dest: "{{ item.filename }}"
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  with_items: "{{ airflow_logrotate_config }}"
+
+
+# Manage database initialize if first deployment
+- name: 'Manage database initialize'
+  become: True
+  become_user: "{{ airflow_user_name }}"
+  command: "{{ airflow_virtualenv }}/bin/airflow initdb"
+  when:
+    - "{{ not airflow_config_stat.stat.exists }}"
+    - "{{ airflow_do_init_db }}"
+
+
+# Manage database upgrade if not first deployment
+- name: 'Manage database upgrade'
+  become: True
+  become_user: "{{ airflow_user_name }}"
+  command: "{{ airflow_virtualenv }}/bin/airflow upgradedb"
+  when:
+    - "{{ airflow_config_stat.stat.exists }}"
+    - "{{ airflow_do_upgrade_db }}"

@@ -1,4 +1,5 @@
 # Swap files
+*.swo
 *.swp
 
 # Python bytecode
@@ -9,6 +10,10 @@
 
 # Vagrant
 .vagrant
+*.retry
 
 # Bundle
 .bundle
+
+# Tox testing
+.tox

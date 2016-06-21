@@ -1,0 +1,11 @@
+---
+
+# Airflow role testing vars
+
+airflow_extra_packages:
+  - name: 'airflow[crypto]'
+  - name: 'airflow[mysql]'
+  - name: 'airflow[password]'
+
+airflow_system_dependencies:
+  - name: 'libmysqlclient-dev'

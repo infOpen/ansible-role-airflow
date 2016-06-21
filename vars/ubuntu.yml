@@ -1,0 +1,12 @@
+---
+
+# Ubuntu specific values
+
+airflow_default_system_dependencies:
+  - name: "{{ airflow_python_version }}-dev"
+  - name: 'libpq-dev'
+  - name: 'libssl-dev'
+  - name: 'libffi-dev'
+  - name: 'build-essential'
+  - name: 'python-virtualenv'
+  - name: 'python-pip'
