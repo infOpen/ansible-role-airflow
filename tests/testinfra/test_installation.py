@@ -3,19 +3,7 @@ Role tests
 """
 import pytest
 
-# To mark all the tests as destructive:
-# pytestmark = pytest.mark.destructive
-
-# To run all the tests on given docker images:
 pytestmark = pytest.mark.docker_images('infopen/ubuntu-trusty-ssh')
-# pytestmark = pytest.mark.docker_images('infopen/ubuntu-trusty-ssh',
-#                                       'infopen/ubuntu-xenial-ssh')
-
-# Both
-# pytestmark = [
-#     pytest.mark.destructive,
-#     pytest.mark.docker_images("debian:jessie", "centos:7")
-# ]
 
 
 def test_airflow_user(User):
@@ -70,3 +58,45 @@ def test_airflow_services(Service):
 
         assert service.is_running
         assert service.is_enabled
+
+
+def test_airflow_pid_folder(File):
+    """
+    PID folder should exists
+    """
+
+    pid_folder = File('/var/run/airflow')
+
+    assert pid_folder.exists is True
+    assert pid_folder.is_directory is True
+    assert pid_folder.user == 'airflow'
+    assert pid_folder.group == 'airflow'
+    assert pid_folder.mode == 0o700
+
+
+def test_airflow_home_folder(File):
+    """
+    Airflow home folder should exists
+    """
+
+    home_folder = File('/var/lib/airflow/airflow')
+
+    assert home_folder.exists is True
+    assert home_folder.is_directory is True
+    assert home_folder.user == 'airflow'
+    assert home_folder.group == 'airflow'
+    assert home_folder.mode == 0o700
+
+
+def test_airflow_virtual_env_folder(File):
+    """
+    Virtualenv folder should exists
+    """
+
+    venv_folder = File('/var/lib/airflow/venv')
+
+    assert venv_folder.exists is True
+    assert venv_folder.is_directory is True
+    assert venv_folder.user == 'airflow'
+    assert venv_folder.group == 'airflow'
+    assert venv_folder.mode == 0o755
