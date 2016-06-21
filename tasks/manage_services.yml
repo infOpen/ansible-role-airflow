@@ -55,5 +55,6 @@
   become: True
   service:
     name: "{{ item.name }}"
+    enabled: "{{ item.enabled | default(False) }}"
     state: "{{ item.state }}"
   with_items: "{{ airflow_services_states }}"

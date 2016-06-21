@@ -40,8 +40,10 @@ airflow_managed_initd_services:
 
 airflow_services_states:
   - name: 'airflow-webserver'
+    enabled: True
     state: 'started'
   - name: 'airflow-scheduler'
+    enabled: True
     state: 'started'
 
 
