@@ -7,35 +7,29 @@
   tags:
     - 'role::airflow'
     - 'role::airflow::init'
-
-
-# Include default system dependencies
-- name: 'Include default system dependencies'
-  include_vars: "{{ role_path }}/vars/{{ ansible_distribution | lower }}.yml"
-  tags:
-    - 'install'
-    - 'airflow'
+    - 'role::airflow::install'
 
 
 # Installation tasks management
-- name: 'Include installation tasks'
+- name: 'INSTALL | Include installation tasks'
   include: "{{ role_path }}/tasks/manage_installation.yml"
   tags:
-    - 'install'
-    - 'airflow'
+    - 'role::airflow'
+    - 'role::airflow::install'
 
 
 # Configuration tasks management
-- name: 'Include configuration tasks'
+- name: 'CONFIG | Include configuration tasks'
   include: "{{ role_path }}/tasks/manage_configuration.yml"
   tags:
-    - 'config'
-    - 'airflow'
+    - 'role::airflow'
+    - 'role::airflow::config'
 
 
 # Services tasks management
-- name: 'Include services configuration tasks'
+- name: 'SERVICE | Include services configuration tasks'
   include: "{{ role_path }}/tasks/manage_services.yml"
   tags:
-    - 'config'
-    - 'airflow'
+    - 'role::airflow'
+    - 'role::airflow::config'
+    - 'role::airflow::install'

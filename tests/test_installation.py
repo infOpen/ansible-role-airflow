@@ -30,7 +30,8 @@ def test_airflow_group(host):
 
 
 @pytest.mark.parametrize('name,codenames', [
-    ('python3.4-dev', None),
+    ('python3.4-dev', ['trusty', 'jessie']),
+    ('python3.5-dev', ['xenial']),
     ('libpq-dev', None),
     ('libssl-dev', None),
     ('libffi-dev', None),
@@ -71,10 +72,13 @@ def test_airflow_services(host, name):
     Test about airflow services
     """
 
-    service = host.service(name)
-
-    assert service.is_running
-    assert service.is_enabled
+    if host.system_info.codename == 'jessie':
+        output = host.check_output('service {} status'.format(name))
+        assert '{} running'.format(name) in output
+    else:
+        service = host.service(name)
+        assert service.is_running
+        assert service.is_enabled
 
 
 @pytest.mark.parametrize('path,path_type,user,group,mode', [

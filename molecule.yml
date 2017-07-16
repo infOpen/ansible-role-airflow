@@ -11,9 +11,11 @@ ansible:
         - name: 'airflow[crypto]'
         - name: 'airflow[mysql]'
         - name: 'airflow[password]'
-
-      airflow_system_dependencies:
+      __airflow_system_dependencies:
         - name: 'libmysqlclient-dev'
+      airflow_system_dependencies: "{{
+        _airflow_system_dependencies + __airflow_system_dependencies }}"
+      airflow_webserver_hostname: '127.0.0.1'
 dependency:
   name: 'galaxy'
 driver:
@@ -24,11 +26,12 @@ docker:
       image: 'debian'
       image_version: 'jessie'
     - name: 'airflow-docker-trusty'
-      image: 'ubuntu'
+      image: 'ubuntu-upstart'
       image_version: 'trusty'
     - name: 'airflow-docker-xenial'
-      image: 'ubuntu'
-      image_version: 'xenial'
+      image: 'infopen/ubuntu-xenial-ssh-py27'
+      image_version: '0.2.0'
+      privileged: True
 molecule:
   ignore_paths:
     - '.git'
