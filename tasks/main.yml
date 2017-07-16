@@ -2,6 +2,13 @@
 
 # Main tasks file for airflow role
 
+- name: 'INIT | Manage variables to use for our target'
+  include: "{{ role_path }}/tasks/manage_variables.yml"
+  tags:
+    - 'role::airflow'
+    - 'role::airflow::init'
+
+
 # Include default system dependencies
 - name: 'Include default system dependencies'
   include_vars: "{{ role_path }}/vars/{{ ansible_distribution | lower }}.yml"
