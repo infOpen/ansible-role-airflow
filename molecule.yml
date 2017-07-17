@@ -16,6 +16,7 @@ ansible:
       airflow_system_dependencies: "{{
         _airflow_system_dependencies + __airflow_system_dependencies }}"
       airflow_webserver_hostname: '127.0.0.1'
+      airflow_do_upgrade_db: False
 dependency:
   name: 'galaxy'
 driver:
