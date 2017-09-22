@@ -2,6 +2,9 @@
 
 # Defaults vars file for airflow role
 
+# Airflow installation tasks
+airflow_system_dependencies: "{{ _airflow_system_dependencies }}"
+
 # Installation vars
 airflow_user_name: 'airflow'
 airflow_user_group: "{{ airflow_user_name }}"
@@ -20,7 +23,7 @@ airflow_pid_group: "{{ airflow_user_group }}"
 airflow_pid_mode: '0700'
 
 airflow_virtualenv: "{{ airflow_user_home_path }}/venv"
-airflow_python_version: 'python3.4'
+airflow_python_version: "{{ _airflow_python_version }}"
 airflow_packages:
   - name: 'Cython'
     version: '0.24'
@@ -30,7 +33,6 @@ airflow_packages:
     version: '23.0.0'
 airflow_extra_packages:
   - name: 'airflow[crypto]'
-airflow_system_dependencies: []
 
 # Services management
 airflow_managed_upstart_services: []

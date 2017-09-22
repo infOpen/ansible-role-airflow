@@ -1,39 +1,27 @@
 ---
 
-# Travis file for airflow role
+# Travis configuration
 
-dist: trusty
-sudo: required
+dist: 'trusty'
+sudo: 'required'
 
 services:
-  - docker
+  - 'docker'
 
 language: 'python'
 
-python:
-  - '2.7'
-
 env:
-  global:
-    - ANSIBLE_ROLES_PATH="${TRAVIS_BUILD_DIR%/*/*}"
-
   matrix:
     - TOXENV='py27-ansible20'
     - TOXENV='py27-ansible21'
+    - TOXENV='py27-ansible22'
+    - TOXENV='py27-ansible23'
 
-before_install:
-
-  # Create SSH keys
-  -  cat /dev/zero | ssh-keygen -q -N ""
 install:
-
-  # Install tox dependency
-  - 'pip install tox'
+  - 'pip install tox-travis'
 
 script:
-
-  # Run tests
-  - 'travis_wait 30 make test-env'
+  - 'travis_wait 50 tox -e "${TOXENV}"'
 
 notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  webhooks: 'https://galaxy.ansible.com/api/v1/notifications/'

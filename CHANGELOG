@@ -1,0 +1,8 @@
+# Describe changes between releases
+
+* System dependencies are managed by distribution/family dedicated files
+* Manage also Debian Jessie and Ubuntu Xenial deployment
+* Replace `airflow_default_system_dependencies` by `_airflow_system_dependencies`
+* `airflow_system_dependencies` default value is now `_airflow_system_dependencies`
+  You can use combine filter to add your packages if needed
+

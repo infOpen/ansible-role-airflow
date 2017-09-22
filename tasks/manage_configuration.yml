@@ -3,7 +3,7 @@
 # Airflow configuration tasks
 
 # Check if configuration file exists
-- name: 'Check if configuration file exists'
+- name: 'CONFIG | Check if configuration file exists'
   become: True
   stat:
     path: "{{ airflow_config.core.home }}/airflow.cfg"
@@ -12,7 +12,7 @@
 
 
 # Create airflow directory
-- name: 'Create root airflow directory'
+- name: 'CONFIG | Create root airflow directory'
   become: True
   file:
     path: "{{ airflow_config.core.home }}"
@@ -23,7 +23,7 @@
 
 
 # Manage configuration templating
-- name: 'Manage configuration templating'
+- name: 'CONFIG | Manage configuration templating'
   become: True
   become_user: "{{ airflow_user_name }}"
   template:
@@ -36,7 +36,7 @@
 
 
 # Manage logs folder
-- name: 'Manage log folder'
+- name: 'CONFIG | Manage log folder'
   become: True
   file:
     path: "{{ airflow_log_path }}"
@@ -47,7 +47,7 @@
 
 
 # Manage pid folder
-- name: 'Manage pid folder'
+- name: 'CONFIG | Manage pid folder'
   become: True
   file:
     path: "{{ airflow_pid_path }}"
@@ -58,7 +58,7 @@
 
 
 # Manage logrotate configuration
-- name: 'Manage logrotate configuration'
+- name: 'CONFIG | Manage logrotate configuration'
   become: True
   template:
     src: "{{ role_path }}/templates/logrotate.j2"
@@ -70,20 +70,20 @@
 
 
 # Manage database initialize if first deployment
-- name: 'Manage database initialize'
+- name: 'CONFIG | Manage database initialize'
   become: True
   become_user: "{{ airflow_user_name }}"
   command: "{{ airflow_virtualenv }}/bin/airflow initdb"
   when:
-    - "{{ not airflow_config_stat.stat.exists }}"
-    - "{{ airflow_do_init_db }}"
+    - "not airflow_config_stat.stat.exists"
+    - "airflow_do_init_db | bool"
 
 
 # Manage database upgrade if not first deployment
-- name: 'Manage database upgrade'
+- name: 'CONFIG | Manage database upgrade'
   become: True
   become_user: "{{ airflow_user_name }}"
   command: "{{ airflow_virtualenv }}/bin/airflow upgradedb"
   when:
-    - "{{ airflow_config_stat.stat.exists }}"
-    - "{{ airflow_do_upgrade_db }}"
+    - "airflow_config_stat.stat.exists"
+    - "airflow_do_upgrade_db | bool"

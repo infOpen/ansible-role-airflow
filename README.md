@@ -2,10 +2,7 @@
 
 [![Build Status](https://travis-ci.org/infOpen/ansible-role-airflow.svg?branch=master)](https://travis-ci.org/infOpen/ansible-role-airflow)
 
-Ansible role to manage Airflow installation and configuration
-
-First role usage is to manage a single master instance, so I've not manage
-worker side. If you want, free to do PR to add these features.
+Install airflow package.
 
 ## Requirements
 
@@ -14,49 +11,41 @@ and platform requirements are listed in the metadata file.
 
 ## Testing
 
-This role contains two tests methods :
-- locally using Vagrant
-- automatically with Travis
+This role use [Molecule](https://github.com/metacloud/molecule/) to run tests.
 
-### Testing dependencies
+Locally, you can run tests on Docker (default driver) or Vagrant.
+Travis run tests using Docker driver only.
 
-> **Warning**
-> Due to numpy pip package installation into isolated virtualenv,
-> tests are (too) long to run with Docker. For development, perhap better to use
-> Vagrant
+Currently, tests are done on:
+- Debian Jessie
+- Ubuntu Trusty
+- Ubuntu Xenial
 
-Role tests are done with Docker, Tox and testinfra in temporaly container
-- install [Docker](https://www.docker.com/)
-- install [Tox](https://pypi.python.org/pypi/tox) into a virtualenv
+and use:
+- Ansible 2.0.x
+- Ansible 2.1.x
+- Ansible 2.2.x
+- Ansible 2.3.x
 
 ### Running tests
 
-#### Run playbook with Vagrant
+#### Using Docker driver
 
-- if Vagrant box not running
-    $ vagrant up
+```
+$ tox
+```
 
-- if Vagrant box running
-    $ vagrant provision
+#### Using Vagrant driver
 
-#### Run playbook and tests with Docker
-
-> **Warning**
-> You must have an SSH keys into common location (~/.ssh/id_rsa) or set path in
->  environment variables. They will used to connect to container by SSH for
-> Ansible deployment
-
-- make test-all (for test over all Ansible version)
-- or for only one version: TOXENV=py27-ansible20 make test-env
+```
+$ MOLECULE_DRIVER=vagrant tox
+```
 
 ## Role Variables
 
-> **Warning**
-> No Fernet key defined on configuration, so set your own before store passwords !
-
 ### Default role variables
 
-```yaml
+``` yaml
 # Installation vars
 airflow_user_name: 'airflow'
 airflow_user_group: "{{ airflow_user_name }}"
@@ -88,15 +77,19 @@ airflow_extra_packages:
 airflow_system_dependencies: []
 
 # Services management
-airflow_managed_upstart_services:
+airflow_managed_upstart_services: []
+airflow_managed_initd_services:
   - 'airflow-scheduler'
   - 'airflow-webserver'
 
 airflow_services_states:
   - name: 'airflow-webserver'
+    enabled: True
     state: 'started'
   - name: 'airflow-scheduler'
+    enabled: True
     state: 'started'
+
 
 # Webserver service configuration
 airflow_webserver_port: 8080
@@ -229,9 +222,11 @@ None
 
 ## Example Playbook
 
-    - hosts: servers
-      roles:
-         - { role: infOpen.airflow }
+``` yaml
+- hosts: servers
+  roles:
+    - { role: infOpen.airflow }
+```
 
 ## License
 
