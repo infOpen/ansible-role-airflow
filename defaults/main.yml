@@ -25,6 +25,8 @@ airflow_pid_mode: '0700'
 airflow_virtualenv: "{{ airflow_user_home_path }}/venv"
 airflow_python_version: "{{ _airflow_python_version }}"
 airflow_packages:
+  - name: 'GitPython'
+    version: '2.1.5'
   - name: 'Cython'
     version: '0.24'
   - name: 'apache-airflow'
