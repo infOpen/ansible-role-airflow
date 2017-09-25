@@ -7,6 +7,7 @@ _airflow_system_dependencies:
   - name: 'libpq-dev'
   - name: 'libssl-dev'
   - name: 'libffi-dev'
+  - name: 'libxml2'
   - name: 'build-essential'
   - name: 'python-virtualenv'
   - name: 'python-pip'
