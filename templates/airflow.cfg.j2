@@ -214,3 +214,18 @@ authenticate = {{ airflow_config.mesos.authenticate }}
 # Mesos credentials, if authentication is enabled
 default_principal = {{ airflow_config.mesos.default_principal }}
 default_secret = {{ airflow_config.mesos.default_secret }}
+
+[ldap]
+uri = {{ airflow_config.ldap.uri }}
+user_filter = {{ airflow_config.ldap.user_filter }}
+# In case of Active Directory you would use: user_name_attr = sAMAccountName
+user_name_attr = {{ airflow_config.ldap.user_name_attr }}
+superuser_filter = {{ airflow_config.ldap.superuser_filter }}
+data_profiler_filter = {{ airflow_config.ldap.data_profiler_filter }}
+bind_user = {{ airflow_config.ldap.bind_user }}
+bind_password = {{ airflow_config.ldap.bind_password }}
+basedn = {{ airflow_config.ldap.basedn }}
+cacert = {{ airflow_config.ldap.cacert }}
+# Set search_scope to one of them:  BASE, LEVEL , SUBTREE
+# Set search_scope to SUBTREE if using Active Directory, and not specifying an Organizational Unit
+search_scope = {{ airflow_config.ldap.search_scope }}

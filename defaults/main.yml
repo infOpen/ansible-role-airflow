@@ -156,6 +156,18 @@ airflow_defaults_config:
     default_principal: 'admin'
     default_secret: 'admin'
 
+  ldap:
+    uri: 'ldaps://<your.ldap.server>:<port>'
+    user_filter: 'objectClass=*'
+    user_name_attr: 'uid'
+    superuser_filter: ''
+    data_profiler_filter: ''
+    bind_user: ''
+    bind_password: ''
+    basedn: 'dc=example,dc=com'
+    cacert: ''
+    search_scope: 'LEVEL'
+
 airflow_user_config: {}
 airflow_config: "{{ airflow_defaults_config | combine(airflow_user_config) }}"
 
