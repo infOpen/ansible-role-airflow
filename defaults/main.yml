@@ -79,7 +79,7 @@ airflow_do_upgrade_db: True
 # Default configuration
 airflow_defaults_config:
   core:
-    home: "{{ airflow_user_home_path ~ '/airflow' }}"
+    airflow_home: "{{ airflow_user_home_path ~ '/airflow' }}"
     dags_folder: "{{ airflow_user_home_path ~ '/airflow/dags' }}"
     base_log_folder: "{{ airflow_log_path }}"
     remote_base_log_folder: ''
@@ -114,6 +114,7 @@ airflow_defaults_config:
     expose_config: True
     authenticate: False
     filter_by_owner: False
+    auth_backend: ''
 
   email:
     email_backend: 'airflow.utils.email.send_email_smtp'
@@ -169,7 +170,7 @@ airflow_defaults_config:
     search_scope: 'LEVEL'
 
 airflow_user_config: {}
-airflow_config: "{{ airflow_defaults_config | combine(airflow_user_config) }}"
+airflow_config: "{{ airflow_defaults_config | combine(airflow_user_config, recursive=True) }}"
 
 # Logrotate configuration
 airflow_logrotate_config:

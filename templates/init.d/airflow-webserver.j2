@@ -11,7 +11,7 @@
 # {{ ansible_managed }}
 
 # Airflow service vars
-AIRFLOW_HOME="{{ airflow_config.core.home }}"
+AIRFLOW_HOME="{{ airflow_config.core.airflow_home }}"
 AIRFLOW_CONFIG="${AIRFLOW_HOME}/airflow.cfg"
 AIRFLOW_BINARY_PATH="{{ airflow_virtualenv ~ '/bin' }}"
 AIRFLOW_WEBSERVER_PORT="{{ airflow_webserver_port }}"

@@ -8,12 +8,12 @@ stop on (deconfiguring-networking or runlevel [016])
 respawn
 respawn limit {{ airflow_scheduler_respawn_limit_count }} {{ airflow_scheduler_respawn_limit_timeperiod }}
 
-chdir {{ airflow_config.core.home }}
+chdir {{ airflow_config.core.airflow_home }}
 setuid {{ airflow_user_name }}
 setgid {{ airflow_user_group }}
 
 # Define environment variables
-env AIRFLOW_HOME="{{ airflow_config.core.home }}"
+env AIRFLOW_HOME="{{ airflow_config.core.airflow_home }}"
 env AIRFLOW_CONFIG="${AIRFLOW_HOME}/airflow.cfg"
 env AIRFLOW_BINARY_PATH="{{ airflow_virtualenv ~ '/bin' }}"
 env AIRFLOW_SCHEDULER_RUNS="{{ airflow_scheduler_runs }}"
