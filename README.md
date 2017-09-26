@@ -121,7 +121,7 @@ airflow_do_upgrade_db: True
 # Default configuration
 airflow_defaults_config:
   core:
-    home: "{{ airflow_user_home_path ~ '/airflow' }}"
+    airflow_home: "{{ airflow_user_home_path ~ '/airflow' }}"
     dags_folder: "{{ airflow_user_home_path ~ '/airflow/dags' }}"
     base_log_folder: "{{ airflow_log_path }}"
     remote_base_log_folder: ''
