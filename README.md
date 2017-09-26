@@ -156,6 +156,7 @@ airflow_defaults_config:
     expose_config: True
     authenticate: False
     filter_by_owner: False
+    auth_backend: ''
 
   email:
     email_backend: 'airflow.utils.email.send_email_smtp'
