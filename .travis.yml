@@ -16,6 +16,7 @@ env:
     - TOXENV='py27-ansible21'
     - TOXENV='py27-ansible22'
     - TOXENV='py27-ansible23'
+    - TOXENV='py27-ansible24'
 
 install:
   - 'pip install tox-travis'

@@ -23,15 +23,12 @@ driver:
   name: 'docker'
 docker:
   containers:
-    - name: 'airflow-docker-jessie'
-      image: 'debian'
-      image_version: 'jessie'
     - name: 'airflow-docker-trusty'
       image: 'ubuntu-upstart'
       image_version: 'trusty'
     - name: 'airflow-docker-xenial'
-      image: 'infopen/ubuntu-xenial-ssh-py27'
-      image_version: '0.2.0'
+      image: 'solita/ubuntu-systemd'
+      image_version: '16.04'
       privileged: True
 molecule:
   ignore_paths:
