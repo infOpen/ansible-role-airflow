@@ -76,11 +76,75 @@ airflow_extra_packages:
   - name: 'airflow[crypto]'
 airflow_system_dependencies: []
 
-# Services management
-airflow_managed_upstart_services: []
-airflow_managed_initd_services:
-  - 'airflow-scheduler'
-  - 'airflow-webserver'
+
+# SERVICES MANAGEMENT
+# -----------------------------------------------------------------------------
+
+# Airflow init.d services specific settings
+airflow_services_initd:
+  - src: "{{ role_path }}/templates/init.d/airflow-webserver.j2"
+    dest: '/etc/init.d/airflow-webserver'
+    handler: 'Restart airflow-webserver'
+  - src: "{{ role_path }}/templates/init.d/airflow-scheduler.j2"
+    dest: '/etc/init.d/airflow-scheduler'
+    handler: 'Restart airflow-scheduler'
+
+# Airflow upstart services specific settings
+airflow_scheduler_respawn_limit_count: 5
+airflow_scheduler_respawn_limit_timeperiod: 30
+airflow_webserver_respawn_limit_count: 5
+airflow_webserver_respawn_limit_timeperiod: 30
+is_upstart_managed_system: "{{ _is_upstart_managed_system | default(False) }}"
+airflow_services_upstart:
+  - src: "{{ role_path }}/templates/upstart/airflow-webserver.conf.j2"
+    dest: '/etc/init/airflow-webserver.conf'
+    handler: 'Restart airflow-webserver'
+  - src: "{{ role_path }}/templates/upstart/airflow-scheduler.conf.j2"
+    dest: '/etc/init/airflow-scheduler.conf'
+    handler: 'Restart airflow-scheduler'
+
+# Airflow systemd services specific settings
+is_systemd_managed_system: "{{ _is_systemd_managed_system | default(False) }}"
+airflow_services_systemd:
+  - dest: '/etc/systemd/system/airflow-webserver.service'
+    handler: 'Restart airflow-webserver'
+    options:
+      Install:
+        WantedBy: 'multi-user.target'
+      Service:
+        Environment: "PATH={{ airflow_virtualenv ~ '/bin' }}"
+        EnvironmentFile: "{{ airflow_paths.files.environment.path }}"
+        ExecStart: "{{ airflow_virtualenv ~ '/bin' }}/airflow webserver"
+        Group: "{{ airflow_user_group }}"
+        PrivateTmp: 'true'
+        Restart: 'on-failure'
+        RestartSec: '5s'
+        Type : 'simple'
+        User: "{{ airflow_user_name }}"
+      Unit:
+        After: 'network.target postgresql.service mysql.service redis.service rabbitmq-server.service'
+        Description: 'Airflow webserver daemon'
+        Wants: 'postgresql.service mysql.service redis.service rabbitmq-server.service'
+  - dest: '/etc/systemd/system/airflow-scheduler.service'
+    handler: 'Restart airflow-scheduler'
+    options:
+      Install:
+        WantedBy: 'multi-user.target'
+      Service:
+        Environment: "PATH={{ airflow_virtualenv ~ '/bin' }}"
+        EnvironmentFile: "{{ airflow_paths.files.environment.path }}"
+        ExecStart: "{{ airflow_virtualenv ~ '/bin' }}/airflow scheduler"
+        Group: "{{ airflow_user_group }}"
+        PrivateTmp: 'true'
+        Restart: 'always'
+        RestartSec: '5s'
+        Type : 'simple'
+        User: "{{ airflow_user_name }}"
+      Unit:
+        After: 'network.target postgresql.service mysql.service redis.service rabbitmq-server.service'
+        Description: 'Airflow scheduler daemon'
+        Wants: 'postgresql.service mysql.service redis.service rabbitmq-server.service'
+
 
 airflow_services_states:
   - name: 'airflow-webserver'
@@ -90,25 +154,11 @@ airflow_services_states:
     enabled: True
     state: 'started'
 
-
-# Webserver service configuration
-airflow_webserver_port: 8080
-airflow_webserver_workers: 1
-airflow_webserver_worker_class: 'sync'
-airflow_webserver_worker_timeout: 30
-airflow_webserver_hostname: "{{ ansible_default_ipv4.address }}"
-airflow_webserver_pid_file: "{{ airflow_pid_path }}/airflow-webserver.pid"
-airflow_webserver_log_file: "{{ airflow_log_path }}/airflow-webserver.log"
-airflow_webserver_debug: False
-airflow_webserver_respawn_limit_count: 5
-airflow_webserver_respawn_limit_timeperiod: 30
-
-# Scheduler service configuration
-airflow_scheduler_runs: 0
-airflow_scheduler_pid_file: "{{ airflow_pid_path }}/airflow-scheduler.pid"
-airflow_scheduler_log_file: "{{ airflow_log_path }}/airflow-scheduler.log"
-airflow_scheduler_respawn_limit_count: 5
-airflow_scheduler_respawn_limit_timeperiod: 30
+# Environment variables file
+airflow_paths:
+  files:
+    environment:
+      path: '/etc/default/airflow'
 
 # Databases variables
 airflow_manage_database: True

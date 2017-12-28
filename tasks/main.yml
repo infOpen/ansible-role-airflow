@@ -29,6 +29,7 @@
 # Services tasks management
 - name: 'SERVICE | Include services configuration tasks'
   include: "{{ role_path }}/tasks/manage_services.yml"
+  become: True
   tags:
     - 'role::airflow'
     - 'role::airflow::config'
