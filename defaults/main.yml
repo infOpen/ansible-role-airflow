@@ -5,6 +5,10 @@
 # Airflow installation tasks
 airflow_system_dependencies: "{{ _airflow_system_dependencies }}"
 
+# Set changed when due to idempotency problem with pip module
+# Always changed with airflow and airflow[crypto]
+airflow_pip_changed_when: False
+
 # Installation vars
 airflow_user_name: 'airflow'
 airflow_user_group: "{{ airflow_user_name }}"

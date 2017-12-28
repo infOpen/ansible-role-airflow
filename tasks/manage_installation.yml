@@ -37,6 +37,7 @@
     state: "{{ item.state | default('present') }}"
     virtualenv: "{{ airflow_virtualenv }}"
     virtualenv_python: "{{ airflow_python_version }}"
+  changed_when: "airflow_pip_changed_when"
   with_items: "{{ airflow_packages }}"
 
 
@@ -48,4 +49,5 @@
     state: "{{ item.state | default('present') }}"
     virtualenv: "{{ airflow_virtualenv }}"
     virtualenv_python: "{{ airflow_python_version }}"
+  changed_when: "airflow_pip_changed_when"
   with_items: "{{ airflow_extra_packages }}"
