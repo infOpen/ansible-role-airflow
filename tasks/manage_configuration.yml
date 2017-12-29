@@ -4,7 +4,6 @@
 
 # Check if configuration file exists
 - name: 'CONFIG | Check if configuration file exists'
-  become: True
   stat:
     path: "{{ airflow_config.core.airflow_home }}/airflow.cfg"
   register: 'airflow_config_stat'
@@ -13,7 +12,6 @@
 
 # Create airflow directory
 - name: 'CONFIG | Create root airflow directory'
-  become: True
   file:
     path: "{{ airflow_config.core.airflow_home }}"
     owner: "{{ airflow_user_name }}"
@@ -24,7 +22,6 @@
 
 # Manage configuration templating
 - name: 'CONFIG | Manage configuration templating'
-  become: True
   become_user: "{{ airflow_user_name }}"
   template:
     src: "{{ role_path }}/templates/airflow.cfg.j2"
@@ -37,7 +34,6 @@
 
 # Manage logs folder
 - name: 'CONFIG | Manage log folder'
-  become: True
   file:
     path: "{{ airflow_log_path }}"
     owner: "{{ airflow_log_owner }}"
@@ -48,7 +44,6 @@
 
 # Manage pid folder
 - name: 'CONFIG | Manage pid folder'
-  become: True
   file:
     path: "{{ airflow_pid_path }}"
     owner: "{{ airflow_pid_owner }}"
@@ -59,7 +54,6 @@
 
 # Manage logrotate configuration
 - name: 'CONFIG | Manage logrotate configuration'
-  become: True
   template:
     src: "{{ role_path }}/templates/logrotate.j2"
     dest: "{{ item.filename }}"
@@ -71,7 +65,6 @@
 
 # Manage database initialize if first deployment
 - name: 'CONFIG | Manage database initialize'
-  become: True
   become_user: "{{ airflow_user_name }}"
   command: "{{ airflow_virtualenv }}/bin/airflow initdb"
   when:
@@ -81,7 +74,6 @@
 
 # Manage database upgrade if not first deployment
 - name: 'CONFIG | Manage database upgrade'
-  become: True
   become_user: "{{ airflow_user_name }}"
   command: "{{ airflow_virtualenv }}/bin/airflow upgradedb"
   when:

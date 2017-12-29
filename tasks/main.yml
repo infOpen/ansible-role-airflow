@@ -13,6 +13,7 @@
 # Installation tasks management
 - name: 'INSTALL | Include installation tasks'
   include: "{{ role_path }}/tasks/manage_installation.yml"
+  become: True
   tags:
     - 'role::airflow'
     - 'role::airflow::install'
@@ -21,6 +22,7 @@
 # Configuration tasks management
 - name: 'CONFIG | Include configuration tasks'
   include: "{{ role_path }}/tasks/manage_configuration.yml"
+  become: True
   tags:
     - 'role::airflow'
     - 'role::airflow::config'
@@ -29,6 +31,7 @@
 # Services tasks management
 - name: 'SERVICE | Include services configuration tasks'
   include: "{{ role_path }}/tasks/manage_services.yml"
+  become: True
   tags:
     - 'role::airflow'
     - 'role::airflow::config'

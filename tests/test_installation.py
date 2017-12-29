@@ -60,7 +60,7 @@ def test_airflow_processes(host):
     Test about airflow processes
     """
 
-    assert len(host.process.get(user='airflow', comm='airflow')) >= 2
+    assert len(host.process.filter(user='airflow', comm='airflow')) >= 2
 
 
 @pytest.mark.parametrize('name', [
