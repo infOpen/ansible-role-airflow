@@ -6,23 +6,21 @@ Install airflow package.
 
 ## Requirements
 
-This role requires Ansible 2.0 or higher,
+This role requires Ansible 2.2 or higher,
 and platform requirements are listed in the metadata file.
 
 ## Testing
 
 This role use [Molecule](https://github.com/metacloud/molecule/) to run tests.
 
-Locally, you can run tests on Docker (default driver) or Vagrant.
-Travis run tests using Docker driver only.
+Local and Travis tests run tests on Docker by default.
+See molecule documentation to use other backend.
 
 Currently, tests are done on:
 - Ubuntu Trusty
 - Ubuntu Xenial
 
 and use:
-- Ansible 2.0.x
-- Ansible 2.1.x
 - Ansible 2.2.x
 - Ansible 2.3.x
 - Ansible 2.4.x
@@ -33,12 +31,6 @@ and use:
 
 ```
 $ tox
-```
-
-#### Using Vagrant driver
-
-```
-$ MOLECULE_DRIVER=vagrant tox
 ```
 
 ## Role Variables
