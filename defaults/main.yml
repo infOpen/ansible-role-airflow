@@ -83,7 +83,7 @@ airflow_services_systemd:
         PrivateTmp: 'true'
         Restart: 'on-failure'
         RestartSec: '5s'
-        Type : 'simple'
+        Type: 'simple'
         User: "{{ airflow_user_name }}"
       Unit:
         After: 'network.target postgresql.service mysql.service redis.service rabbitmq-server.service'
@@ -102,7 +102,7 @@ airflow_services_systemd:
         PrivateTmp: 'true'
         Restart: 'always'
         RestartSec: '5s'
-        Type : 'simple'
+        Type: 'simple'
         User: "{{ airflow_user_name }}"
       Unit:
         After: 'network.target postgresql.service mysql.service redis.service rabbitmq-server.service'

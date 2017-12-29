@@ -2,15 +2,12 @@
 
 galaxy_info:
   author: 'Alexandre Chaussier'
-  description: 'Ansible role to manage Airflow installation and configuration'
+  description: 'Ansible role to install and configure Airflow'
   company: 'Infopen (http://www.infopen.pro)'
   license: 'MIT'
-  min_ansible_version: '2.0'
+  min_ansible_version: '2.2'
   github_branch: 'master'
   platforms:
-    - name: 'Debian'
-      versions:
-        - 'jessie'
     - name: 'Ubuntu'
       versions:
         - 'trusty'
