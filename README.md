@@ -2,7 +2,10 @@
 
 [![Build Status](https://travis-ci.org/infOpen/ansible-role-airflow.svg?branch=master)](https://travis-ci.org/infOpen/ansible-role-airflow)
 
-Install airflow package.
+Ansible role to manage Airflow installation and configuration
+
+First role usage is to manage a single master instance, so I've not manage worker side. If you want, free to do PR to add these features.
+
 
 ## Requirements
 
@@ -34,6 +37,9 @@ $ tox
 ```
 
 ## Role Variables
+
+> **Warning**
+> No Fernet key defined on configuration, so set your own before store passwords !
 
 ### Default role variables
 
@@ -255,6 +261,10 @@ airflow_defaults_config:
 
 airflow_user_config: {}
 airflow_config: "{{ airflow_defaults_config | combine(airflow_user_config) }}"
+
+# Connections management
+airflow_drop_existing_connections_before_add: True
+airflow_connections: []
 
 # Logrotate configuration
 airflow_logrotate_config:

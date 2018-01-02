@@ -33,7 +33,7 @@
   become_user: "{{ airflow_user_name }}"
   pip:
     name: "{{ item.name }}"
-    version: "{{ item.version }}"
+    version: "{{ item.version | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     virtualenv: "{{ airflow_virtualenv }}"
     virtualenv_python: "{{ airflow_python_version }}"

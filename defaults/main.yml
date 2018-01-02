@@ -234,6 +234,10 @@ airflow_defaults_config:
 airflow_user_config: {}
 airflow_config: "{{ airflow_defaults_config | combine(airflow_user_config, recursive=True) }}"
 
+# Connections management
+airflow_drop_existing_connections_before_add: True
+airflow_connections: []
+
 # Logrotate configuration
 airflow_logrotate_config:
   - filename: '/etc/logrotate.d/airflow'
