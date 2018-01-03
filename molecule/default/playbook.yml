@@ -18,5 +18,35 @@
 
 - name: 'Converge | Main tasks'
   hosts: 'all'
+  pre_tasks:
+    - block:
+        - name: 'PREREQUISITES | APT | Install locales and git'
+          apt:
+            name: "{{ item }}"
+          changed_when: False
+          with_items:
+            - 'git'
+            - 'locales'
+        - name: 'PREREQUISITES | Prepare locales management - Ubuntu'
+          copy:
+            dest: '/etc/locale.conf'
+            content: 'LANG=en_US.UTF-8'
+          changed_when: False
+        - name: 'PREREQUISITES | Prepare locales management - Debian'
+          copy:
+            dest: '/etc/locale.gen'
+            content: "en_US.UTF-8 UTF-8\n"
+          changed_when: False
+        - name: 'PREREQUISITES | Update locales'
+          command: 'locale-gen'
+          changed_when: False
+          when: "(ansible_distribution_release | lower) != 'trusty'"
+        - name: 'PREREQUISITES | Update locales'
+          command: 'locale-gen en_US.UTF-8'
+          changed_when: False
+          when: "(ansible_distribution_release | lower) == 'trusty'"
+      become: True
   roles:
     - role: "ansible-role-airflow"
+  environment:
+    LC_ALL: 'en_US.UTF-8'

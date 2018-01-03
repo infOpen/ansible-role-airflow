@@ -1,0 +1,40 @@
+---
+
+# Manage connections using Airflow CLI
+
+- name: 'CONFIG | CONNECTIONS | Get existing connections'
+  become_user: "{{ airflow_user_name }}"
+  shell: >
+    {{ airflow_virtualenv }}/bin/airflow connections --list \
+    | grep -E "\s+'" | cut -d "'" -f2
+  changed_when: false
+  register: 'airflow_existing_connections'
+
+
+# Only add and delete actions are managed, not update
+- name: 'CONFIG | CONNECTIONS | Remove existing connections'
+  shell: >
+    {{ airflow_virtualenv }}/bin/airflow connections --delete \
+    --conn_id {{ item }}
+  changed_when: false
+  with_items: "{{ airflow_existing_connections.stdout_lines }}"
+  when: 'airflow_drop_existing_connections_before_add | bool'
+
+
+- name: 'CONFIG | CONNECTIONS | Add connections without extra settings'
+  shell: >
+    {{ airflow_virtualenv }}/bin/airflow connections --add \
+    --conn_id {{ item.conn_id }} --conn_uri {{ item.conn_uri }}
+  changed_when: false
+  with_items: "{{ airflow_connections }}"
+  when: "(item.conn_extra | default('')) == ''"
+
+
+- name: 'CONFIG | CONNECTIONS | Add connections with extra settings'
+  shell: >
+    {{ airflow_virtualenv }}/bin/airflow connections --add \
+    --conn_id {{ item.conn_id }} --conn_uri {{ item.conn_uri }} \
+    --conn_extra {{ item.conn_extra }}
+  changed_when: false
+  with_items: "{{ airflow_connections }}"
+  when: "(item.conn_extra | default('')) != ''"
