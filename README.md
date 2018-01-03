@@ -1,6 +1,10 @@
 # airflow
 
-[![Build Status](https://travis-ci.org/infOpen/ansible-role-airflow.svg?branch=master)](https://travis-ci.org/infOpen/ansible-role-airflow)
+[![Build Status](https://img.shields.io/travis/infOpen/ansible-role-airflow/master.svg?label=travis_master)](https://travis-ci.org/infOpen/ansible-role-airflow)
+[![Build Status](https://img.shields.io/travis/infOpen/ansible-role-airflow/develop.svg?label=travis_develop)](https://travis-ci.org/infOpen/ansible-role-airflow)
+[![Updates](https://pyup.io/repos/github/infOpen/ansible-role-airflow/shield.svg)](https://pyup.io/repos/github/infOpen/ansible-role-airflow/)
+[![Python 3](https://pyup.io/repos/github/infOpen/ansible-role-airflow/python-3-shield.svg)](https://pyup.io/repos/github/infOpen/ansible-role-airflow/)
+[![Ansible Role](https://img.shields.io/ansible/role/10445.svg)](https://galaxy.ansible.com/infOpen/airflow/)
 
 Ansible role to manage Airflow installation and configuration
 
