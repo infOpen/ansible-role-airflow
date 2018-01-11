@@ -8,7 +8,11 @@
     name: "{{ item.name }}"
     state: 'restarted'
   with_items: "{{ airflow_services_states }}"
-  when: "{{ item.state == 'started' }}"
+  when: "item.state == 'started'"
+  tags:
+    - 'role::airflow'
+    - 'role::airflow::config'
+    - 'role::airflow::install'
 
 
 - name: 'Restart airflow-webserver'
@@ -17,7 +21,13 @@
     name: "{{ item.name }}"
     state: 'restarted'
   with_items: "{{ airflow_services_states }}"
-  when: "{{ (item.name == 'airflow-webserver') and (item.state == 'started') }}"
+  when:
+    - "item.name == 'airflow-webserver'"
+    - "item.state == 'started'"
+  tags:
+    - 'role::airflow'
+    - 'role::airflow::config'
+    - 'role::airflow::install'
 
 
 - name: 'Restart airflow-scheduler'
@@ -26,4 +36,10 @@
     name: "{{ item.name }}"
     state: 'restarted'
   with_items: "{{ airflow_services_states }}"
-  when: "{{ (item.name == 'airflow-scheduler') and (item.state == 'started') }}"
+  when:
+    - "item.name == 'airflow-scheduler'"
+    - "item.state == 'started'"
+  tags:
+    - 'role::airflow'
+    - 'role::airflow::config'
+    - 'role::airflow::install'

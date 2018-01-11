@@ -1,0 +1,10 @@
+---
+
+# Ubuntu Trusty specific vars
+
+
+# Python
+_airflow_python_version: 'python3.4'
+
+# Services management
+_is_upstart_managed_system: True

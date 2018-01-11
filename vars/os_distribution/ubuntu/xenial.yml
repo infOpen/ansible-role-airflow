@@ -1,0 +1,10 @@
+---
+
+# Ubuntu Xenial specific vars
+
+
+# Python
+_airflow_python_version: 'python3.5'
+
+# Services management
+_is_systemd_managed_system: True

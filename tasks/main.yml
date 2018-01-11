@@ -2,33 +2,48 @@
 
 # Main tasks file for airflow role
 
-# Include default system dependencies
-- name: 'Include default system dependencies'
-  include_vars: "{{ role_path }}/vars/{{ ansible_distribution | lower }}.yml"
+- name: 'INIT | Manage variables to use for our target'
+  include: "{{ role_path }}/tasks/manage_variables.yml"
   tags:
-    - 'install'
-    - 'airflow'
+    - 'role::airflow'
+    - 'role::airflow::init'
+    - 'role::airflow::install'
 
 
 # Installation tasks management
-- name: 'Include installation tasks'
+- name: 'INSTALL | Include installation tasks'
   include: "{{ role_path }}/tasks/manage_installation.yml"
+  become: True
   tags:
-    - 'install'
-    - 'airflow'
+    - 'role::airflow'
+    - 'role::airflow::install'
 
 
 # Configuration tasks management
-- name: 'Include configuration tasks'
+- name: 'CONFIG | Include configuration tasks'
   include: "{{ role_path }}/tasks/manage_configuration.yml"
+  become: True
   tags:
-    - 'config'
-    - 'airflow'
+    - 'role::airflow'
+    - 'role::airflow::config'
 
 
 # Services tasks management
-- name: 'Include services configuration tasks'
+- name: 'SERVICE | Include services configuration tasks'
   include: "{{ role_path }}/tasks/manage_services.yml"
+  become: True
   tags:
-    - 'config'
-    - 'airflow'
+    - 'role::airflow'
+    - 'role::airflow::config'
+    - 'role::airflow::install'
+
+
+# Services tasks management
+- name: 'SERVICE | Include connections tasks'
+  include: "{{ role_path }}/tasks/manage_connections.yml"
+  environment:
+    AIRFLOW_CONFIG: '/var/lib/airflow/airflow/airflow.cfg'
+  become: True
+  tags:
+    - 'role::airflow'
+    - 'role::airflow::config'

@@ -1,0 +1,23 @@
+---
+
+# Role tests
+
+- hosts: 'airflow-vagrant-xenial64:airflow-docker-xenial'
+  name: 'Install tests prerequisites'
+  gather_facts: False
+  tasks:
+    - name: 'PREREQUISITES | APT | Do an apt-get update'
+      become: True
+      raw: 'apt-get update -qq'
+      changed_when: False
+    - name: 'PREREQUISITES | APT | Install python 2.7, iproute and net-tools'
+      become: True
+      raw: 'apt-get install -qq python2.7 iproute net-tools'
+      changed_when: False
+
+
+- hosts: 'all'
+  roles:
+    - role: "{{ role_name }}"
+  vars:
+    role_name: "{{ playbook_dir | basename }}"

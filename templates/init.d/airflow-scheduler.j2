@@ -10,13 +10,8 @@
 
 # {{ ansible_managed }}
 
-# Airflow service vars
-AIRFLOW_HOME="{{ airflow_config.core.home }}"
-AIRFLOW_CONFIG="${AIRFLOW_HOME}/airflow.cfg"
-AIRFLOW_BINARY_PATH="{{ airflow_virtualenv ~ '/bin' }}"
-AIRFLOW_SCHEDULER_RUNS="{{ airflow_scheduler_runs }}"
-AIRFLOW_SCHEDULER_PID_FILE="{{ airflow_scheduler_pid_file }}"
-AIRFLOW_SCHEDULER_LOG_FILE="{{ airflow_scheduler_log_file }}"
+# Load Airflow service vars
+. "{{ airflow_paths.files.environment.path }}"
 
 # Init common vars
 NAME="airflow-scheduler"
@@ -35,8 +30,8 @@ test -x $DAEMON || exit 1
 . /lib/lsb/init-functions
 
 # Airflow folder for pid file
-if [ ! -d "{{ airflow_scheduler_pid_file | dirname }}" ]; then
-  mkdir "{{ airflow_scheduler_pid_file | dirname }}"
+if [ ! -d "{{ airflow_config.scheduler.pid | dirname }}" ]; then
+  mkdir "{{ airflow_config.scheduler.pid | dirname }}"
 fi
 
 # Additional functions
@@ -58,7 +53,8 @@ running() {
 }
 
 start_server() {
-  start-stop-daemon --start --quiet --pidfile $AIRFLOW_SCHEDULER_PID_FILE \
+  export AIRFLOW_HOME AIRFLOW_CONFIG && \
+  start-stop-daemon --start --quiet \
     --chuid $DAEMON_USER \
     --exec $DAEMON -- $DAEMON_OPTS
   errcode=$?

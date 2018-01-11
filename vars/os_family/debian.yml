@@ -1,12 +1,15 @@
 ---
 
-# Ubuntu specific values
+# Debian OS family specific vars
 
-airflow_default_system_dependencies:
+_airflow_system_dependencies:
   - name: "{{ airflow_python_version }}-dev"
   - name: 'libpq-dev'
   - name: 'libssl-dev'
   - name: 'libffi-dev'
+  - name: 'libxml2'
+  - name: 'libxml2-dev'
+  - name: 'libxslt1-dev'
   - name: 'build-essential'
   - name: 'python-virtualenv'
   - name: 'python-pip'

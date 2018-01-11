@@ -1,0 +1,59 @@
+---
+
+dependency:
+  name: 'galaxy'
+driver:
+  name: 'docker'
+lint:
+  name: 'yamllint'
+platforms:
+  - name: "airflow-docker-xenial"
+    image: 'solita/ubuntu-systemd:16.04'
+    privileged: True
+    cap_add:
+      - 'SYS_ADMIN'
+      - 'SYS_PTRACE'
+    command: '/sbin/init'
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+  - name: "airflow-docker-trusty"
+    image: 'ubuntu-upstart:trusty'
+    privileged: True
+    cap_add:
+      - 'SYS_ADMIN'
+      - 'SYS_PTRACE'
+    command: '/sbin/init'
+provisioner:
+  name: 'ansible'
+  lint:
+    name: 'ansible-lint'
+  inventory:
+    host_vars: {}
+    group_vars:
+      all:
+        airflow_extra_packages:
+          - name: 'airflow[crypto]'
+          - name: 'airflow[mysql]'
+          - name: 'airflow[password]'
+        __airflow_system_dependencies:
+          - name: 'libmysqlclient-dev'
+        airflow_system_dependencies: "{{
+          _airflow_system_dependencies + __airflow_system_dependencies }}"
+        airflow_webserver_hostname: '127.0.0.1'
+        airflow_do_upgrade_db: False
+        airflow_connections:
+          - conn_id: 'foo'
+            conn_uri: 'foobar://foo_user:foo_password@bar.foobar'
+        airflow_user_config:
+          core:
+            fernet_key: '3hw5_gCG2QGFn1zmLJdj0zfDTxoJS-1llvxzmxS3DHg='
+scenario:
+  name: 'default'
+verifier:
+  name: 'testinfra'
+  additional_files_or_dirs:
+    - '../../tests'
+  lint:
+    name: 'flake8'
+  options:
+    sudo: True
