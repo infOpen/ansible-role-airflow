@@ -79,3 +79,4 @@
   when:
     - "airflow_config_stat.stat.exists"
     - "airflow_do_upgrade_db | bool"
+

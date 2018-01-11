@@ -51,3 +51,13 @@
     virtualenv_python: "{{ airflow_python_version }}"
   changed_when: "airflow_pip_changed_when"
   with_items: "{{ airflow_extra_packages }}"
+
+# Link Mesos Python bindings in the virtualenv sandbox
+- name: 'Manage mesos python bindings'
+  become: True
+  become_user: "{{ airflow_user_name }}"
+  file:
+    src: "{{ airflow_mesos_python_bindings_path }}/mesos"
+    dest: "{{ airflow_virtualenv }}/lib/{{ airflow_python_version }}/site-packages/mesos"
+    state: 'link'
+  when: "airflow_mesos_python_bindings_path is not none"
