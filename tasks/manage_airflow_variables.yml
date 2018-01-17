@@ -24,4 +24,5 @@
     {{ airflow_virtualenv }}/bin/airflow variables --set {{ item.key }} \
     {{ item.value }}
   changed_when: false
+  no_log: True
   with_items: "{{ airflow_variables }}"
