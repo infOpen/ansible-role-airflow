@@ -1,4 +1,4 @@
-molecule==2.6.0
+molecule==2.7.0
 pytest==3.3.2
 python-vagrant==0.5.15
 testinfra==1.10.1
