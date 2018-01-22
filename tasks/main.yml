@@ -38,9 +38,20 @@
     - 'role::airflow::install'
 
 
-# Services tasks management
-- name: 'SERVICE | Include connections tasks'
+# Connections tasks management
+- name: 'CONFIG | Include connections tasks'
   include: "{{ role_path }}/tasks/manage_connections.yml"
+  environment:
+    AIRFLOW_CONFIG: '/var/lib/airflow/airflow/airflow.cfg'
+  become: True
+  tags:
+    - 'role::airflow'
+    - 'role::airflow::config'
+
+
+# Airflow variables tasks management
+- name: 'CONFIG | Include connections tasks'
+  include: "{{ role_path }}/tasks/manage_airflow_variables.yml"
   environment:
     AIRFLOW_CONFIG: '/var/lib/airflow/airflow/airflow.cfg'
   become: True
