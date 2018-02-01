@@ -270,6 +270,10 @@ airflow_config: "{{ airflow_defaults_config | combine(airflow_user_config) }}"
 airflow_drop_existing_connections_before_add: True
 airflow_connections: []
 
+# Variables management
+airflow_drop_existing_variables_before_add: True
+airflow_variables: []
+
 # Logrotate configuration
 airflow_logrotate_config:
   - filename: '/etc/logrotate.d/airflow'

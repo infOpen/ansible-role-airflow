@@ -44,6 +44,11 @@ provisioner:
         airflow_connections:
           - conn_id: 'foo'
             conn_uri: 'foobar://foo_user:foo_password@bar.foobar'
+        airflow_variables:
+          - key: 'my_key'
+            value: 'my_key_value'
+          - key: 'my_key_2'
+            value: 'my_key_2_value'
         airflow_user_config:
           core:
             fernet_key: '3hw5_gCG2QGFn1zmLJdj0zfDTxoJS-1llvxzmxS3DHg='

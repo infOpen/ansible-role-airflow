@@ -8,6 +8,7 @@
     {{ airflow_virtualenv }}/bin/airflow connections --list \
     | grep -E "\s+'" | cut -d "'" -f2
   changed_when: false
+  failed_when: False
   register: 'airflow_existing_connections'
 
 
@@ -26,6 +27,7 @@
     {{ airflow_virtualenv }}/bin/airflow connections --add \
     --conn_id {{ item.conn_id }} --conn_uri {{ item.conn_uri }}
   changed_when: false
+  no_log: True
   with_items: "{{ airflow_connections }}"
   when: "(item.conn_extra | default('')) == ''"
 
@@ -34,7 +36,8 @@
   shell: >
     {{ airflow_virtualenv }}/bin/airflow connections --add \
     --conn_id {{ item.conn_id }} --conn_uri {{ item.conn_uri }} \
-    --conn_extra {{ item.conn_extra }}
+    --conn_extra {{ item.conn_extra | quote }}
   changed_when: false
+  no_log: True
   with_items: "{{ airflow_connections }}"
   when: "(item.conn_extra | default('')) != ''"

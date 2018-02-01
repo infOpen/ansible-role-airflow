@@ -1,0 +1,28 @@
+---
+
+# Manage variables using Airflow CLI
+
+- name: 'CONFIG | VARIABLES | Get existing variables'
+  become_user: "{{ airflow_user_name }}"
+  shell: >
+    {{ airflow_virtualenv }}/bin/airflow variables | grep -vE '^\['
+  changed_when: false
+  register: 'airflow_existing_variables'
+
+
+# Only add and delete actions are managed, not update
+- name: 'CONFIG | VARIABLES | Remove existing variables'
+  shell: >
+    {{ airflow_virtualenv }}/bin/airflow variables --delete {{ item }}
+  changed_when: false
+  with_items: "{{ airflow_existing_variables.stdout_lines }}"
+  when: 'airflow_drop_existing_variables_before_add | bool'
+
+
+- name: 'CONFIG | VARIABLES | Add variables'
+  shell: >
+    {{ airflow_virtualenv }}/bin/airflow variables --set {{ item.key }} \
+    {{ item.value }}
+  changed_when: false
+  no_log: True
+  with_items: "{{ airflow_variables }}"
