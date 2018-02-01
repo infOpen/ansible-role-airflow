@@ -36,7 +36,7 @@
   shell: >
     {{ airflow_virtualenv }}/bin/airflow connections --add \
     --conn_id {{ item.conn_id }} --conn_uri {{ item.conn_uri }} \
-    --conn_extra {{ item.conn_extra }}
+    --conn_extra {{ item.conn_extra | quote }}
   changed_when: false
   no_log: True
   with_items: "{{ airflow_connections }}"
