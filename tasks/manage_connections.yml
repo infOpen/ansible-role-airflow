@@ -8,6 +8,7 @@
     {{ airflow_virtualenv }}/bin/airflow connections --list \
     | grep -E "\s+'" | cut -d "'" -f2
   changed_when: false
+  failed_when: False
   register: 'airflow_existing_connections'
 
 
