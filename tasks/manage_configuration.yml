@@ -62,6 +62,11 @@
     mode: '0644'
   with_items: "{{ airflow_logrotate_config }}"
 
+- command: "{{ airflow_virtualenv }}/bin/pip list"
+
+- command: "cat {{ airflow_config.core.airflow_home }}/airflow.cfg"
+
+- command: "env"
 
 # Manage database initialize if first deployment
 - name: 'CONFIG | Manage database initialize'
