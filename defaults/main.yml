@@ -35,10 +35,10 @@ airflow_packages:
     version: '2.1.9'
   - name: 'Cython'
     version: '0.28.1'
-  - name: 'Flask-WTF'
-    version: '0.14.2'
   - name: 'apache-airflow'
     version: '1.9.0'
+  - name: 'Flask-WTF'
+    version: '0.14.2'
   - name: 'setuptools'
     version: '39.0.1'
 airflow_extra_packages:
