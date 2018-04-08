@@ -25,6 +25,8 @@ platforms:
     command: '/sbin/init'
 provisioner:
   name: 'ansible'
+  env:
+    AIRFLOW_HOME: '~/airflow'
   lint:
     name: 'ansible-lint'
   inventory:
