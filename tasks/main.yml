@@ -3,7 +3,7 @@
 # Main tasks file for airflow role
 
 - name: 'INIT | Manage variables to use for our target'
-  include: "{{ role_path }}/tasks/manage_variables.yml"
+  import_tasks: "{{ role_path }}/tasks/manage_variables.yml"
   tags:
     - 'role::airflow'
     - 'role::airflow::init'

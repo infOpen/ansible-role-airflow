@@ -1,5 +1,0 @@
----
-
-# Debian Jessie specific vars
-
-_airflow_python_version: 'python3.4'
