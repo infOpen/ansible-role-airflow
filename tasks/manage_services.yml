@@ -34,8 +34,14 @@
     group: "{{ item.group | default('root') }}"
     mode: "{{ item.mode | default('0644') }}"
   notify: "{{ item.handler }}"
+  register: airflow_systemd_updated
   with_items: "{{ airflow_services_systemd }}"
   when: "is_systemd_managed_system | bool"
+
+- name: 'SERVICE | systemd daemon-reload'
+  systemd:
+    daemon_reload: true
+  when: "(is_systemd_managed_system | bool) and (airflow_systemd_updated.changed | bool)"
 
 
 - name: 'SERVICE | Manage services with init.d'
