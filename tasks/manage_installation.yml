@@ -26,6 +26,33 @@
     owner: "{{ airflow_user_name }}"
     group: "{{ airflow_user_name }}"
     mode: "{{ airflow_user_home_mode }}"
+    state: directory
+
+
+- name: 'INSTALL | Manage permissions on airflow venv directory'
+  file:
+    path: "{{ airflow_virtualenv }}"
+    owner: "{{ airflow_user_name }}"
+    group: "{{ airflow_user_name }}"
+    mode: "{{ airflow_virtualenv_mode }}"
+    state: directory
+
+- name: 'INSTALL | Manage permissions on airflow home directory'
+  file:
+    path: "{{ airflow_defaults_config.core.airflow_home }}"
+    owner: "{{ airflow_user_name }}"
+    group: "{{ airflow_user_name }}"
+    mode: "{{ airflow_defaults_config.core.airflow_home_mode }}"
+    state: directory
+
+
+- name: 'INSTALL | Manage permissions on airflow dags directory'
+  file:
+    path: "{{ airflow_defaults_config.core.dags_folder }}"
+    owner: "{{ airflow_user_name }}"
+    group: "{{ airflow_user_name }}"
+    mode: "{{ airflow_defaults_config.core.dags_folder_mode }}"
+    state: directory
 
 
 # Install airflow packages
