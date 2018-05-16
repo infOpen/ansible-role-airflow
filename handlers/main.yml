@@ -58,4 +58,3 @@
     - 'role::airflow'
     - 'role::airflow::config'
     - 'role::airflow::install'
-
