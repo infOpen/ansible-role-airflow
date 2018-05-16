@@ -57,29 +57,6 @@ airflow_provide_user_env: False
 # SERVICES MANAGEMENT
 # -----------------------------------------------------------------------------
 
-# Airflow init.d services specific settings
-airflow_services_initd:
-  - src: "{{ role_path }}/templates/init.d/airflow-webserver.j2"
-    dest: '/etc/init.d/airflow-webserver'
-    handler: 'Restart airflow-webserver'
-  - src: "{{ role_path }}/templates/init.d/airflow-scheduler.j2"
-    dest: '/etc/init.d/airflow-scheduler'
-    handler: 'Restart airflow-scheduler'
-
-# Airflow upstart services specific settings
-airflow_scheduler_respawn_limit_count: 5
-airflow_scheduler_respawn_limit_timeperiod: 30
-airflow_webserver_respawn_limit_count: 5
-airflow_webserver_respawn_limit_timeperiod: 30
-is_upstart_managed_system: "{{ _is_upstart_managed_system | default(False) }}"
-airflow_services_upstart:
-  - src: "{{ role_path }}/templates/upstart/airflow-webserver.conf.j2"
-    dest: '/etc/init/airflow-webserver.conf'
-    handler: 'Restart airflow-webserver'
-  - src: "{{ role_path }}/templates/upstart/airflow-scheduler.conf.j2"
-    dest: '/etc/init/airflow-scheduler.conf'
-    handler: 'Restart airflow-scheduler'
-
 # Airflow systemd services specific settings
 is_systemd_managed_system: "{{ _is_systemd_managed_system | default(False) }}"
 airflow_services_systemd:
