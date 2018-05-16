@@ -32,9 +32,9 @@ provisioner:
     group_vars:
       all:
         airflow_extra_packages:
-          - name: 'airflow[crypto]'
-          - name: 'airflow[mysql]'
-          - name: 'airflow[password]'
+          - name: 'apache-airflow[crypto]'
+          - name: 'apache-airflow[mysql]'
+          - name: 'apache-airflow[password]'
         __airflow_system_dependencies:
           - name: 'libmysqlclient-dev'
         airflow_system_dependencies: "{{
