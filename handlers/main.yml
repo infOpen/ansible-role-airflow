@@ -43,3 +43,19 @@
     - 'role::airflow'
     - 'role::airflow::config'
     - 'role::airflow::install'
+
+
+- name: 'Restart airflow-kerberos'
+  become: True
+  service:
+    name: "{{ item.name }}"
+    state: 'restarted'
+  with_items: "{{ airflow_services_states }}"
+  when:
+    - "item.name == 'airflow-kerberos'"
+    - "item.state == 'started'"
+  tags:
+    - 'role::airflow'
+    - 'role::airflow::config'
+    - 'role::airflow::install'
+
