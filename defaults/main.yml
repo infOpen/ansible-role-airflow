@@ -9,6 +9,12 @@ airflow_system_dependencies: "{{ _airflow_system_dependencies }}"
 # Always changed with airflow and airflow[crypto]
 airflow_pip_changed_when: False
 
+# Ansible's pip module doesn't currently support complex version strings
+# https://github.com/ansible/ansible/issues/19321
+# And Airflow may currently require custom version strings
+# https://stackoverflow.com/a/48075827
+airflow_pip_custom_version_install: False
+
 # Installation vars
 airflow_user_name: 'airflow'
 airflow_user_group: "{{ airflow_user_name }}"

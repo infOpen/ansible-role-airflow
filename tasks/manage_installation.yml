@@ -83,6 +83,22 @@
     virtualenv_python: "{{ airflow_python_version }}"
   changed_when: "airflow_pip_changed_when"
   with_items: "{{ airflow_packages }}"
+  when: (not airflow_pip_custom_version_install) or
+      (item.version is not defined) or 
+      ( (not item.version | search('<') ) and (not item.version | search('>') ) )
+
+
+# Install airflow packages
+# Ansible's pip module doesn't currently support complex version strings
+# https://github.com/ansible/ansible/issues/19321
+- name: 'INSTALL | Manage airflow installation - complex pip versions'
+  become_user: "{{ airflow_user_name }}"
+  command: "{{ airflow_virtualenv }}/bin/pip install '{{ item.name }}{{ item.version }}'"
+  changed_when: "airflow_pip_changed_when"
+  with_items: "{{ airflow_packages }}"
+  when: (airflow_pip_custom_version_install) and
+        (item.version is defined) and 
+      ( (item.version | search('<') ) or (item.version | search('>') ) )
 
 
 # Install airflow extra packages
