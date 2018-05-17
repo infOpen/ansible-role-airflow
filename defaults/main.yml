@@ -116,6 +116,7 @@ airflow_paths:
 # Databases variables
 airflow_manage_database: True
 airflow_database_engine: 'mysql'
+airflow_database_sqlite_file_path: "{{ airflow_user_home_path ~ '/airflow/airflow.db' }}"
 
 # Set do_init to false if database already initialized
 airflow_do_init_db: True
@@ -133,7 +134,7 @@ airflow_defaults_config:
     remote_log_conn_id: ''
     encrypt_s3_logs: False
     executor: 'SequentialExecutor'
-    sql_alchemy_conn: 'sqlite:////var/lib/airflow/airflow/airflow.db'
+    sql_alchemy_conn: "sqlite:///{{ airflow_database_sqlite_file_path }}"
     sql_alchemy_pool_size: 5
     sql_alchemy_pool_recycle: 3600
     parallelism: 32

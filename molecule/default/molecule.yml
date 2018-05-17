@@ -36,6 +36,7 @@ provisioner:
           - name: 'default-libmysqlclient-dev'
     group_vars:
       all:
+        airflow_database_engine: 'sqlite'
         airflow_extra_packages:
           - name: 'apache-airflow[crypto]'
           - name: 'apache-airflow[mysql]'
