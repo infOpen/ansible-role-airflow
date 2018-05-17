@@ -64,6 +64,14 @@
     state: directory
 
 
+# setup environment for all users, AIRFLOW_HOME, etc
+- name: 'INSTALL | Manage /etc/profile.d/ file'
+  template:
+    src: "{{ role_path }}/templates/airflow.profile.j2"
+    dest: "/etc/profile.d/airflow.sh"
+  when: airflow_provide_user_env
+
+
 # Install airflow packages
 - name: 'INSTALL | Manage airflow installation'
   become_user: "{{ airflow_user_name }}"

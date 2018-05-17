@@ -41,6 +41,10 @@ airflow_packages:
 airflow_extra_packages:
   - name: 'apache-airflow[crypto]'
 
+# option to set environment for all users,
+# by providing a file in /etc/profile.d/
+airflow_provide_user_env: False
+
 
 # SERVICES MANAGEMENT
 # -----------------------------------------------------------------------------
