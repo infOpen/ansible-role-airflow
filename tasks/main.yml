@@ -13,6 +13,8 @@
 # Installation tasks management
 - name: 'INSTALL | Include installation tasks'
   include: "{{ role_path }}/tasks/manage_installation.yml"
+  environment:
+    AIRFLOW_HOME: '{{ airflow_config.core.airflow_home }}'
   become: True
   tags:
     - 'role::airflow'
@@ -22,6 +24,8 @@
 # Configuration tasks management
 - name: 'CONFIG | Include configuration tasks'
   include: "{{ role_path }}/tasks/manage_configuration.yml"
+  environment:
+    AIRFLOW_HOME: '{{ airflow_config.core.airflow_home }}'
   become: True
   tags:
     - 'role::airflow'
@@ -42,7 +46,7 @@
 - name: 'CONFIG | Include connections tasks'
   include: "{{ role_path }}/tasks/manage_connections.yml"
   environment:
-    AIRFLOW_CONFIG: '/var/lib/airflow/airflow/airflow.cfg'
+    AIRFLOW_HOME: '{{ airflow_config.core.airflow_home }}'
   become: True
   tags:
     - 'role::airflow'
@@ -53,7 +57,7 @@
 - name: 'CONFIG | Include connections tasks'
   include: "{{ role_path }}/tasks/manage_airflow_variables.yml"
   environment:
-    AIRFLOW_CONFIG: '/var/lib/airflow/airflow/airflow.cfg'
+    AIRFLOW_HOME: '{{ airflow_config.core.airflow_home }}'
   become: True
   tags:
     - 'role::airflow'

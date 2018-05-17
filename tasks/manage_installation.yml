@@ -20,6 +20,15 @@
     shell: "{{ airflow_user_shell }}"
 
 
+# Check if configuration file exists
+# This has to happen before the install, because the install creates a default file in $AIRFLOW_HOME
+- name: 'INSTALL | Check if configuration file exists'
+  stat:
+    path: "{{ airflow_config.core.airflow_home }}/airflow.cfg"
+  register: 'airflow_config_stat'
+  changed_when: False
+
+
 - name: 'INSTALL | Manage permissions on user home directory'
   file:
     path: "{{ airflow_user_home_path }}"
@@ -39,19 +48,19 @@
 
 - name: 'INSTALL | Manage permissions on airflow home directory'
   file:
-    path: "{{ airflow_defaults_config.core.airflow_home }}"
+    path: "{{ airflow_config.core.airflow_home }}"
     owner: "{{ airflow_user_name }}"
     group: "{{ airflow_user_name }}"
-    mode: "{{ airflow_defaults_config.core.airflow_home_mode }}"
+    mode: "{{ airflow_config.core.airflow_home_mode }}"
     state: directory
 
 
 - name: 'INSTALL | Manage permissions on airflow dags directory'
   file:
-    path: "{{ airflow_defaults_config.core.dags_folder }}"
+    path: "{{ airflow_config.core.dags_folder }}"
     owner: "{{ airflow_user_name }}"
     group: "{{ airflow_user_name }}"
-    mode: "{{ airflow_defaults_config.core.dags_folder_mode }}"
+    mode: "{{ airflow_config.core.dags_folder_mode }}"
     state: directory
 
 
