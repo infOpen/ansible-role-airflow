@@ -2,24 +2,6 @@
 
 # Airflow configuration tasks
 
-# Check if configuration file exists
-- name: 'CONFIG | Check if configuration file exists'
-  stat:
-    path: "{{ airflow_config.core.airflow_home }}/airflow.cfg"
-  register: 'airflow_config_stat'
-  changed_when: False
-
-
-# Create airflow directory
-- name: 'CONFIG | Create root airflow directory'
-  file:
-    path: "{{ airflow_config.core.airflow_home }}"
-    owner: "{{ airflow_user_name }}"
-    group: "{{ airflow_user_group }}"
-    mode: '0700'
-    state: 'directory'
-
-
 # Manage configuration templating
 - name: 'CONFIG | Manage configuration templating'
   become_user: "{{ airflow_user_name }}"

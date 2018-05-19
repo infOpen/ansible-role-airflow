@@ -20,6 +20,15 @@
     shell: "{{ airflow_user_shell }}"
 
 
+# Check if configuration file exists
+# This has to happen before the install, because the install creates a default file in $AIRFLOW_HOME
+- name: 'INSTALL | Check if configuration file exists'
+  stat:
+    path: "{{ airflow_config.core.airflow_home }}/airflow.cfg"
+  register: 'airflow_config_stat'
+  changed_when: False
+
+
 - name: 'INSTALL | Manage permissions on user home directory'
   file:
     path: "{{ airflow_user_home_path }}"
@@ -39,20 +48,28 @@
 
 - name: 'INSTALL | Manage permissions on airflow home directory'
   file:
-    path: "{{ airflow_defaults_config.core.airflow_home }}"
+    path: "{{ airflow_config.core.airflow_home }}"
     owner: "{{ airflow_user_name }}"
     group: "{{ airflow_user_name }}"
-    mode: "{{ airflow_defaults_config.core.airflow_home_mode }}"
+    mode: "{{ airflow_config.core.airflow_home_mode }}"
     state: directory
 
 
 - name: 'INSTALL | Manage permissions on airflow dags directory'
   file:
-    path: "{{ airflow_defaults_config.core.dags_folder }}"
+    path: "{{ airflow_config.core.dags_folder }}"
     owner: "{{ airflow_user_name }}"
     group: "{{ airflow_user_name }}"
-    mode: "{{ airflow_defaults_config.core.dags_folder_mode }}"
+    mode: "{{ airflow_config.core.dags_folder_mode }}"
     state: directory
+
+
+# setup environment for all users, AIRFLOW_HOME, etc
+- name: 'INSTALL | Manage /etc/profile.d/ file'
+  template:
+    src: "{{ role_path }}/templates/airflow.profile.j2"
+    dest: "/etc/profile.d/airflow.sh"
+  when: airflow_provide_user_env
 
 
 # Install airflow packages
@@ -66,6 +83,22 @@
     virtualenv_python: "{{ airflow_python_version }}"
   changed_when: "airflow_pip_changed_when"
   with_items: "{{ airflow_packages }}"
+  when: (not airflow_pip_custom_version_install) or
+      (item.version is not defined) or 
+      ( (not item.version | search('<') ) and (not item.version | search('>') ) )
+
+
+# Install airflow packages
+# Ansible's pip module doesn't currently support complex version strings
+# https://github.com/ansible/ansible/issues/19321
+- name: 'INSTALL | Manage airflow installation - complex pip versions'
+  become_user: "{{ airflow_user_name }}"
+  command: "{{ airflow_virtualenv }}/bin/pip install '{{ item.name }}{{ item.version }}'"
+  changed_when: "airflow_pip_changed_when"
+  with_items: "{{ airflow_packages }}"
+  when: (airflow_pip_custom_version_install) and
+        (item.version is defined) and 
+      ( (item.version | search('<') ) or (item.version | search('>') ) )
 
 
 # Install airflow extra packages

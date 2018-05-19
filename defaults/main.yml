@@ -9,6 +9,12 @@ airflow_system_dependencies: "{{ _airflow_system_dependencies }}"
 # Always changed with airflow and airflow[crypto]
 airflow_pip_changed_when: False
 
+# Ansible's pip module doesn't currently support complex version strings
+# https://github.com/ansible/ansible/issues/19321
+# And Airflow may currently require custom version strings
+# https://stackoverflow.com/a/48075827
+airflow_pip_custom_version_install: False
+
 # Installation vars
 airflow_user_name: 'airflow'
 airflow_user_group: "{{ airflow_user_name }}"
@@ -40,6 +46,10 @@ airflow_packages:
     version: '23.0.0'
 airflow_extra_packages:
   - name: 'apache-airflow[crypto]'
+
+# option to set environment for all users,
+# by providing a file in /etc/profile.d/
+airflow_provide_user_env: False
 
 
 # SERVICES MANAGEMENT
