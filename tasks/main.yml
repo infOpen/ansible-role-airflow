@@ -12,7 +12,7 @@
 
 # Installation tasks management
 - name: 'INSTALL | Include installation tasks'
-  include: "{{ role_path }}/tasks/manage_installation.yml"
+  import_tasks: "{{ role_path }}/tasks/manage_installation.yml"
   environment:
     AIRFLOW_HOME: '{{ airflow_config.core.airflow_home }}'
   become: True
@@ -23,7 +23,7 @@
 
 # Configuration tasks management
 - name: 'CONFIG | Include configuration tasks'
-  include: "{{ role_path }}/tasks/manage_configuration.yml"
+  import_tasks: "{{ role_path }}/tasks/manage_configuration.yml"
   environment:
     AIRFLOW_HOME: '{{ airflow_config.core.airflow_home }}'
   become: True
@@ -34,7 +34,7 @@
 
 # Services tasks management
 - name: 'SERVICE | Include services configuration tasks'
-  include: "{{ role_path }}/tasks/manage_services.yml"
+  import_tasks: "{{ role_path }}/tasks/manage_services.yml"
   become: True
   tags:
     - 'role::airflow'
@@ -44,7 +44,7 @@
 
 # Connections tasks management
 - name: 'CONFIG | Include connections tasks'
-  include: "{{ role_path }}/tasks/manage_connections.yml"
+  import_tasks: "{{ role_path }}/tasks/manage_connections.yml"
   environment:
     AIRFLOW_HOME: '{{ airflow_config.core.airflow_home }}'
   become: True
@@ -55,7 +55,7 @@
 
 # Airflow variables tasks management
 - name: 'CONFIG | Include connections tasks'
-  include: "{{ role_path }}/tasks/manage_airflow_variables.yml"
+  import_tasks: "{{ role_path }}/tasks/manage_airflow_variables.yml"
   environment:
     AIRFLOW_HOME: '{{ airflow_config.core.airflow_home }}'
   become: True
