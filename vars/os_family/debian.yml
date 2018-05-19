@@ -3,7 +3,7 @@
 # Debian OS family specific vars
 
 _airflow_system_dependencies:
-  - name: "{{ airflow_python_version }}-dev"
+  - name: 'python3-dev'
   - name: 'libpq-dev'
   - name: 'libssl-dev'
   - name: 'libffi-dev'
