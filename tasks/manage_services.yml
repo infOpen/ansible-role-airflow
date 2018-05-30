@@ -14,18 +14,6 @@
     - 'Restart airflow-scheduler'
 
 
-- name: 'SERVICE | Manage services with upstart'
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-    mode: "{{ item.mode | default('0644') }}"
-  notify: "{{ item.handler }}"
-  with_items: "{{ airflow_services_upstart }}"
-  when: "is_upstart_managed_system | bool"
-
-
 - name: 'SERVICE | Manage systemd services'
   template:
     src: "{{ role_path }}/templates/systemd.service.j2"
@@ -42,20 +30,6 @@
   systemd:
     daemon_reload: true
   when: "(is_systemd_managed_system | bool) and (airflow_systemd_updated.changed | bool)"
-
-
-- name: 'SERVICE | Manage services with init.d'
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-    mode: "{{ item.mode | default('0755') }}"
-  notify: "{{ item.handler }}"
-  with_items: "{{ airflow_services_initd }}"
-  when:
-    - "not (is_upstart_managed_system | bool)"
-    - "not (is_systemd_managed_system | bool)"
 
 
 # Services states

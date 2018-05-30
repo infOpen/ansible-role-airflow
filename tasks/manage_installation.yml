@@ -84,7 +84,7 @@
   changed_when: "airflow_pip_changed_when"
   with_items: "{{ airflow_packages }}"
   when: (not airflow_pip_custom_version_install) or
-      (item.version is not defined) or 
+      (item.version is not defined) or
       ( (not item.version | search('<') ) and (not item.version | search('>') ) )
 
 
@@ -97,7 +97,7 @@
   changed_when: "airflow_pip_changed_when"
   with_items: "{{ airflow_packages }}"
   when: (airflow_pip_custom_version_install) and
-        (item.version is defined) and 
+        (item.version is defined) and
       ( (item.version | search('<') ) or (item.version | search('>') ) )
 
 

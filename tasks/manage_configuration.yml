@@ -54,6 +54,17 @@
     - "airflow_do_init_db | bool"
 
 
+# Set Sqlite backend permissions
+- name: 'CONFIG | Ensure SQLite backend file has good permissions'
+  file:
+    path: "{{ airflow_database_sqlite_file_path }}"
+    owner: "{{ airflow_user_name }}"
+    group: "{{ airflow_user_group }}"
+    state: 'file'
+  when:
+    - "airflow_database_engine == 'sqlite'"
+
+
 # Manage database upgrade if not first deployment
 - name: 'CONFIG | Manage database upgrade'
   become_user: "{{ airflow_user_name }}"

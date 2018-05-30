@@ -31,8 +31,7 @@ def test_airflow_group(host):
 
 
 @pytest.mark.parametrize('name,codenames', [
-    ('python3.4-dev', ['trusty', 'jessie']),
-    ('python3.5-dev', ['xenial']),
+    ('python3-dev', None),
     ('libpq-dev', None),
     ('libssl-dev', None),
     ('libffi-dev', None),

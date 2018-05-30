@@ -7,34 +7,40 @@ driver:
 lint:
   name: 'yamllint'
 platforms:
+  - name: "airflow-docker-stretch"
+    image: 'minimum2scp/systemd-stretch:latest'
+    command: '/sbin/init'
+    cap_add:
+      - 'SYS_PTRACE'
+    privileged: True
   - name: "airflow-docker-xenial"
     image: 'solita/ubuntu-systemd:16.04'
-    privileged: True
-    cap_add:
-      - 'SYS_ADMIN'
-      - 'SYS_PTRACE'
     command: '/sbin/init'
-    volumes:
-      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-  - name: "airflow-docker-trusty"
-    image: 'ubuntu-upstart:trusty'
-    privileged: True
     cap_add:
-      - 'SYS_ADMIN'
       - 'SYS_PTRACE'
+    privileged: True
+  - name: "airflow-docker-bionic"
+    image: 'solita/ubuntu-systemd:18.04'
     command: '/sbin/init'
+    cap_add:
+      - 'SYS_PTRACE'
+    privileged: True
 provisioner:
   name: 'ansible'
   lint:
     name: 'ansible-lint'
   inventory:
-    host_vars: {}
+    host_vars:
+      airflow-docker-stretch:
+        __airflow_system_dependencies:
+          - name: 'default-libmysqlclient-dev'
     group_vars:
       all:
+        airflow_database_engine: 'sqlite'
         airflow_extra_packages:
-          - name: 'airflow[crypto]'
-          - name: 'airflow[mysql]'
-          - name: 'airflow[password]'
+          - name: 'apache-airflow[crypto]'
+          - name: 'apache-airflow[mysql]'
+          - name: 'apache-airflow[password]'
         __airflow_system_dependencies:
           - name: 'libmysqlclient-dev'
         airflow_system_dependencies: "{{

@@ -36,14 +36,16 @@ airflow_virtualenv: "{{ airflow_user_home_path }}/venv"
 airflow_virtualenv_mode: "0755"
 airflow_python_version: "{{ _airflow_python_version }}"
 airflow_packages:
-  - name: 'GitPython'
-    version: '2.1.5'
-  - name: 'Cython'
-    version: '0.24'
-  - name: 'apache-airflow'
-    version: '1.8.2'
+  - name: 'pip'
+    version: '10.0.1'
   - name: 'setuptools'
-    version: '23.0.0'
+    version: '39.1.0'
+  - name: 'GitPython'
+    version: '2.1.9'
+  - name: 'Cython'
+    version: '0.28.2'
+  - name: 'apache-airflow'
+    version: '1.9.0'
 airflow_extra_packages:
   - name: 'apache-airflow[crypto]'
 
@@ -54,29 +56,6 @@ airflow_provide_user_env: False
 
 # SERVICES MANAGEMENT
 # -----------------------------------------------------------------------------
-
-# Airflow init.d services specific settings
-airflow_services_initd:
-  - src: "{{ role_path }}/templates/init.d/airflow-webserver.j2"
-    dest: '/etc/init.d/airflow-webserver'
-    handler: 'Restart airflow-webserver'
-  - src: "{{ role_path }}/templates/init.d/airflow-scheduler.j2"
-    dest: '/etc/init.d/airflow-scheduler'
-    handler: 'Restart airflow-scheduler'
-
-# Airflow upstart services specific settings
-airflow_scheduler_respawn_limit_count: 5
-airflow_scheduler_respawn_limit_timeperiod: 30
-airflow_webserver_respawn_limit_count: 5
-airflow_webserver_respawn_limit_timeperiod: 30
-is_upstart_managed_system: "{{ _is_upstart_managed_system | default(False) }}"
-airflow_services_upstart:
-  - src: "{{ role_path }}/templates/upstart/airflow-webserver.conf.j2"
-    dest: '/etc/init/airflow-webserver.conf'
-    handler: 'Restart airflow-webserver'
-  - src: "{{ role_path }}/templates/upstart/airflow-scheduler.conf.j2"
-    dest: '/etc/init/airflow-scheduler.conf'
-    handler: 'Restart airflow-scheduler'
 
 # Airflow systemd services specific settings
 is_systemd_managed_system: "{{ _is_systemd_managed_system | default(False) }}"
@@ -137,6 +116,7 @@ airflow_paths:
 # Databases variables
 airflow_manage_database: True
 airflow_database_engine: 'mysql'
+airflow_database_sqlite_file_path: "{{ airflow_user_home_path ~ '/airflow/airflow.db' }}"
 
 # Set do_init to false if database already initialized
 airflow_do_init_db: True
@@ -154,7 +134,7 @@ airflow_defaults_config:
     remote_log_conn_id: ''
     encrypt_s3_logs: False
     executor: 'SequentialExecutor'
-    sql_alchemy_conn: 'sqlite:////var/lib/airflow/airflow/airflow.db'
+    sql_alchemy_conn: "sqlite:///{{ airflow_database_sqlite_file_path }}"
     sql_alchemy_pool_size: 5
     sql_alchemy_pool_recycle: 3600
     parallelism: 32

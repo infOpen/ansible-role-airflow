@@ -10,10 +10,17 @@ Ansible role to manage Airflow installation and configuration
 
 First role usage is to manage a single master instance, so I've not manage worker side. If you want, free to do PR to add these features.
 
+## Breaking changes
+
+### 0.4.0
+
+* Remove Ubuntu Trusty management
+* Remove Ansible 2.2 and 2.3 management
+* Default Airflow version is now 1.9.0
 
 ## Requirements
 
-This role requires Ansible 2.2 or higher,
+This role requires Ansible 2.4 or higher,
 and platform requirements are listed in the metadata file.
 
 ## Testing
@@ -24,13 +31,13 @@ Local and Travis tests run tests on Docker by default.
 See molecule documentation to use other backend.
 
 Currently, tests are done on:
-- Ubuntu Trusty
+- Debian Stretch
 - Ubuntu Xenial
+- Ubuntu Bionic
 
 and use:
-- Ansible 2.2.x
-- Ansible 2.3.x
 - Ansible 2.4.x
+- Ansible 2.5.x
 
 ### Running tests
 
@@ -48,6 +55,17 @@ $ tox
 ### Default role variables
 
 ``` yaml
+---
+
+# Defaults vars file for airflow role
+
+# Airflow installation tasks
+airflow_system_dependencies: "{{ _airflow_system_dependencies }}"
+
+# Set changed when due to idempotency problem with pip module
+# Always changed with airflow and airflow[crypto]
+airflow_pip_changed_when: False
+
 # Installation vars
 airflow_user_name: 'airflow'
 airflow_user_group: "{{ airflow_user_name }}"
@@ -66,44 +84,24 @@ airflow_pid_group: "{{ airflow_user_group }}"
 airflow_pid_mode: '0700'
 
 airflow_virtualenv: "{{ airflow_user_home_path }}/venv"
-airflow_python_version: 'python3.4'
+airflow_python_version: "{{ _airflow_python_version }}"
 airflow_packages:
-  - name: 'Cython'
-    version: '0.24'
-  - name: 'airflow'
-    version: '1.7.1.3'
+  - name: 'pip'
+    version: '10.0.1'
   - name: 'setuptools'
-    version: '23.0.0'
+    version: '39.1.0'
+  - name: 'GitPython'
+    version: '2.1.9'
+  - name: 'Cython'
+    version: '0.28.2'
+  - name: 'apache-airflow'
+    version: '1.9.0'
 airflow_extra_packages:
-  - name: 'airflow[crypto]'
-airflow_system_dependencies: []
+  - name: 'apache-airflow[crypto]'
 
 
 # SERVICES MANAGEMENT
 # -----------------------------------------------------------------------------
-
-# Airflow init.d services specific settings
-airflow_services_initd:
-  - src: "{{ role_path }}/templates/init.d/airflow-webserver.j2"
-    dest: '/etc/init.d/airflow-webserver'
-    handler: 'Restart airflow-webserver'
-  - src: "{{ role_path }}/templates/init.d/airflow-scheduler.j2"
-    dest: '/etc/init.d/airflow-scheduler'
-    handler: 'Restart airflow-scheduler'
-
-# Airflow upstart services specific settings
-airflow_scheduler_respawn_limit_count: 5
-airflow_scheduler_respawn_limit_timeperiod: 30
-airflow_webserver_respawn_limit_count: 5
-airflow_webserver_respawn_limit_timeperiod: 30
-is_upstart_managed_system: "{{ _is_upstart_managed_system | default(False) }}"
-airflow_services_upstart:
-  - src: "{{ role_path }}/templates/upstart/airflow-webserver.conf.j2"
-    dest: '/etc/init/airflow-webserver.conf'
-    handler: 'Restart airflow-webserver'
-  - src: "{{ role_path }}/templates/upstart/airflow-scheduler.conf.j2"
-    dest: '/etc/init/airflow-scheduler.conf'
-    handler: 'Restart airflow-scheduler'
 
 # Airflow systemd services specific settings
 is_systemd_managed_system: "{{ _is_systemd_managed_system | default(False) }}"
@@ -121,7 +119,7 @@ airflow_services_systemd:
         PrivateTmp: 'true'
         Restart: 'on-failure'
         RestartSec: '5s'
-        Type : 'simple'
+        Type: 'simple'
         User: "{{ airflow_user_name }}"
       Unit:
         After: 'network.target postgresql.service mysql.service redis.service rabbitmq-server.service'
@@ -140,13 +138,12 @@ airflow_services_systemd:
         PrivateTmp: 'true'
         Restart: 'always'
         RestartSec: '5s'
-        Type : 'simple'
+        Type: 'simple'
         User: "{{ airflow_user_name }}"
       Unit:
         After: 'network.target postgresql.service mysql.service redis.service rabbitmq-server.service'
         Description: 'Airflow scheduler daemon'
         Wants: 'postgresql.service mysql.service redis.service rabbitmq-server.service'
-
 
 airflow_services_states:
   - name: 'airflow-webserver'
@@ -198,18 +195,22 @@ airflow_defaults_config:
     default_owner: 'Airflow'
 
   webserver:
-    base_url: 'http://localhost:8080'
-    web_server_host: '0.0.0.0'
-    web_server_port: 8080
-    web_server_worker_timeout: 120
-    secret_key: 'temporary_key'
-    workers: 4
-    worker_class: sync
-    expose_config: True
-    authenticate: False
-    filter_by_owner: False
     auth_backend: ''
-
+    authenticate: False
+    base_url: 'http://localhost:8080'
+    debug: False
+    expose_config: True
+    filter_by_owner: False
+    hostname: "{{ ansible_default_ipv4.address }}"
+    log_file: "{{ airflow_log_path }}/airflow-webserver.log"
+    pid: "{{ airflow_pid_path }}/airflow-webserver.pid"
+    secret_key: 'temporary_key'
+    web_server_host: '0.0.0.0'
+    web_server_port: '8080'
+    web_server_worker_timeout: 120
+    workers: 1
+    worker_class: 'sync'
+    worker_timeout: 30
   email:
     email_backend: 'airflow.utils.email.send_email_smtp'
 
@@ -233,6 +234,9 @@ airflow_defaults_config:
 
   scheduler:
     job_heartbeat_sec: 5
+    log_file: "{{ airflow_log_path }}/airflow-scheduler.log"
+    num_runs: 0
+    pid: "{{ airflow_pid_path }}/airflow-scheduler.pid"
     scheduler_heartbeat_sec: 5
     statsd_on: False
     statsd_host: 'localhost'
@@ -264,7 +268,7 @@ airflow_defaults_config:
     search_scope: 'LEVEL'
 
 airflow_user_config: {}
-airflow_config: "{{ airflow_defaults_config | combine(airflow_user_config) }}"
+airflow_config: "{{ airflow_defaults_config | combine(airflow_user_config, recursive=True) }}"
 
 # Connections management
 airflow_drop_existing_connections_before_add: True

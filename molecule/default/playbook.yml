@@ -3,16 +3,16 @@
 # Role tests
 
 - name: 'Converge | Prerequisites tasks'
-  hosts: 'airflow-docker-xenial'
+  hosts: 'all'
   gather_facts: False
   tasks:
     - name: 'PREREQUISITES | APT | Do an apt-get update'
       become: True
       raw: 'apt-get update -qq'
       changed_when: False
-    - name: 'PREREQUISITES | APT | Install python 2.7, iproute and net-tools'
+    - name: 'PREREQUISITES | APT | Install python 2.7, sqlite3, iproute and net-tools'
       become: True
-      raw: 'apt-get install -qq python2.7 iproute net-tools'
+      raw: "apt-get install -qq python2.7 sqlite3 iproute{{ (ansible_host == 'airflow-docker-bionic') | ternary('2', '') }} net-tools"
       changed_when: False
 
 
