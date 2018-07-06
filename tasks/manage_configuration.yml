@@ -22,6 +22,7 @@
     group: "{{ airflow_log_group }}"
     mode: "{{ airflow_log_mode }}"
     state: 'directory'
+    recurse: yes
 
 
 # Manage pid folder
@@ -32,6 +33,7 @@
     group: "{{ airflow_pid_group }}"
     mode: "{{ airflow_pid_mode }}"
     state: 'directory'
+    recurse: yes
 
 
 # Manage logrotate configuration
