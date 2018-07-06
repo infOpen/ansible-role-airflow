@@ -85,7 +85,7 @@ airflow_services_systemd:
       Install:
         WantedBy: 'multi-user.target'
       Service:
-        Environment: "PATH={{ airflow_virtualenv ~ '/bin' }}"
+        Environment: "PATH={{ airflow_virtualenv ~ '/bin' }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
         EnvironmentFile: "{{ airflow_paths.files.environment.path }}"
         ExecStart: "{{ airflow_virtualenv ~ '/bin' }}/airflow scheduler"
         Group: "{{ airflow_user_group }}"
