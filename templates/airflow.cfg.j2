@@ -1,9 +1,9 @@
 # {{ ansible_managed }}
 
-{% for section_name, section_items in airflow_config.iteritems() %}
+{% for section_name, section_items in airflow_config.items() %}
 
 [{{ section_name }}]
-{% for item_name, item_value in section_items.iteritems() %}
+{% for item_name, item_value in section_items.items() %}
 {{ item_name }} = {{ item_value }}
 {% endfor %}
 {% endfor %}
