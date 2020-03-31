@@ -16,7 +16,7 @@
     path: "{{ airflow_config.core.airflow_home }}"
     owner: "{{ airflow_user_name }}"
     group: "{{ airflow_user_group }}"
-    mode: '0770'
+    mode: '0700'
     state: 'directory'
 
 
@@ -28,7 +28,7 @@
     dest: "{{ airflow_config.core.airflow_home }}/airflow.cfg"
     owner: "{{ airflow_user_name }}"
     group: "{{ airflow_user_group }}"
-    mode: '0660'
+    mode: '0600'
   notify: 'Restart airflow'
 
 
