@@ -28,7 +28,7 @@
     dest: "{{ airflow_config.core.airflow_home }}/airflow.cfg"
     owner: "{{ airflow_user_name }}"
     group: "{{ airflow_user_group }}"
-    mode: '0600'
+    mode: '0400'
   notify: 'Restart airflow'
 
 
